@@ -1,208 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratory SEO Media Review Gallery</title>
     <meta name="description" content="Fully automated AI-scanned media gallery featuring verified brand comparisons, specifications, and VIP upgrade insights.">
-    <!-- Dynamic Container for JSON-LD Schema Blocks -->
-    <div id="seo-schema-container"></div>
-    <style>
-        :root { 
-            --bg-color: #f8f9fa; 
-            --text-main: #212529; 
-            --text-muted: #6c757d; 
-            --card-bg: #ffffff; 
-            --border-color: #dee2e6; 
-            --accent: #1a73e8; 
-            --vip-color: #e37400;
+    <meta name="keywords" content="smartphone, comparison, mobile, review, tech">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://lab-gallery.pages.dev/">
+    <meta name="theme-color" content="#0d6efd">
+
+    <!-- OpenGraph Meta Tags -->
+    <meta property="og:title" content="Laboratory SEO Media Review Gallery">
+    <meta property="og:description" content="Fully automated AI-scanned media gallery featuring verified brand comparisons, specifications, and VIP upgrade insights.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://lab-gallery.pages.dev/assets/logo.png">
+    <meta property="og:image:alt" content="Laboratory SEO Media Review Gallery Logo">
+    <meta property="og:url" content="https://lab-gallery.pages.dev/">
+    <meta property="og:site_name" content="Laboratory SEO Gallery">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Laboratory SEO Media Review Gallery">
+    <meta name="twitter:description" content="Fully automated AI-scanned media gallery featuring verified brand comparisons, specifications, and VIP upgrade insights.">
+    <meta name="twitter:image" content="https://lab-gallery.pages.dev/assets/logo.png">
+    <meta name="twitter:image:alt" content="Laboratory SEO Media Review Gallery Logo">
+    <meta name="twitter:site" content="@labgallery">
+
+    <!-- JSON-LD Containers -->
+    <div id="seo-schema-container">
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Laboratory SEO Media Review Gallery",
+          "url": "https://lab-gallery.pages.dev/"
         }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background: var(--bg-color); 
-            color: var(--text-main); 
-            margin: 0; 
-            padding: 20px; 
+        </script>
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Laboratory SEO",
+          "url": "https://lab-gallery.pages.dev/",
+          "logo": "https://lab-gallery.pages.dev/assets/logo.png"
         }
-        header { 
-            max-width: 1200px; 
-            margin: 0 auto 30px auto; 
-        }
-        h1 { 
-            font-size: 1.8rem; 
-            margin-bottom: 5px; 
-        }
-        p { 
-            color: var(--text-muted); 
-            margin-top: 0; 
-        }
-        .gallery-container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); 
-            gap: 24px; 
-        }
-        .media-card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--border-color); 
-            border-radius: 10px; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.03); 
-        }
-        .media-figure { 
-            margin: 0; 
-            position: relative; 
-        }
-        .media-content { 
-            width: 100%; 
-            height: 220px; 
-            background: #000; 
-            object-fit: cover; 
-        }
-        .sr-only { 
-            position: absolute; 
-            width: 1px; 
-            height: 1px; 
-            padding: 0; 
-            margin: -1px; 
-            overflow: hidden; 
-            clip: rect(0,0,0,0); 
-            border: 0; 
-        }
-        .media-info { 
-            padding: 20px; 
-        }
-        .media-title { 
-            font-weight: 700; 
-            font-size: 1.2rem; 
-            margin-bottom: 8px; 
-            color: #111; 
-        }
-        .media-desc { 
-            font-size: 0.92rem; 
-            color: var(--text-muted); 
-            margin-bottom: 15px; 
-            line-height: 1.5; 
-        }
-        .vip-banner {
-            background: #fef7e0;
-            border-left: 4px solid var(--vip-color);
-            padding: 10px 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: #b06000;
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-        .media-tags { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 5px; 
-            margin-top: 12px; 
-        }
-        .tag { 
-            background: #e8f0fe; 
-            color: var(--accent); 
-            font-size: 0.75rem; 
-            padding: 3px 8px; 
-            border-radius: 4px; 
-            font-weight: 500; 
-        }
-        #error-message { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            color: #dc3545; 
-            font-weight: 500; 
-            margin-bottom: 20px; 
-        }
-    </style>
+        </script>
+    </div>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
         <h1>Laboratory SEO Media Review Gallery</h1>
         <p>AI-grounded brand specifications, product comparisons, and cheap VIP upgrade intelligence.</p>
+        <div class="controls-bar">
+            <input type="text" id="search-input" placeholder="Search reviews or specs..." aria-label="Search reviews">
+            <select id="category-filter" aria-label="Filter media category">
+                <option value="all">All Categories</option>
+                <option value="video">Video</option>
+                <option value="image">Image</option>
+                <option value="audio">Audio</option>
+            </select>
+            <button id="dark-mode-toggle" aria-label="Toggle dark mode">🌙</button>
+        </div>
     </header>
 
-    <div id="error-message"></div>
-    <main id="gallery" class="gallery-container" itemscope itemtype="https://schema.org/ImageGallery"></main>
+    <div id="error-message" role="alert"></div>
+    
+    <main class="gallery-container" itemscope itemtype="https://schema.org/ImageGallery" id="gallery">
+        <!-- Dynamic cards populated by app.js -->
+    </main>
 
-    <script>
-        async function loadLiveGallery() {
-            const errorDiv = document.getElementById('error-message');
-            const galleryGrid = document.getElementById('gallery');
-            const schemaContainer = document.getElementById('seo-schema-container');
-            
-            try {
-                const response = await fetch('./data.json', { cache: 'no-store' });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
-                const items = await response.json();
-                if (!Array.isArray(items) || items.length === 0) {
-                    errorDiv.textContent = 'Content library is currently empty.';
-                    return;
-                }
+    <footer class="site-footer">
+        <p>&copy; 2026 Laboratory SEO Media Review Gallery. All rights reserved.</p>
+    </footer>
 
-                errorDiv.textContent = '';
-                galleryGrid.innerHTML = '';
-                schemaContainer.innerHTML = '';
-                
-                items.forEach((item) => {
-                    const title = item.title || "Laboratory Review Media";
-                    const desc = item.description || "Detailed brand specification analysis and upgrade insights.";
-                    const url = item.url || "";
-                    const alt = item.altText || title;
-                    const keywords = item.keywords || "tech, review, comparison";
-
-                    const article = document.createElement('article');
-                    article.className = 'media-card';
-                    article.setAttribute('itemscope', '');
-                    article.setAttribute('itemtype', 'https://schema.org/VideoObject');
-
-                    article.innerHTML = `
-                        <figure class="media-figure">
-                            <video controls preload="metadata" loading="lazy" class="media-content">
-                                <source src="${url}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                            <figcaption class="sr-only">${alt}</figcaption>
-                        </figure>
-                        <div class="media-info">
-                            <h2 class="media-title" itemprop="name">${title}</h2>
-                            <p class="media-desc" itemprop="description">${desc}</p>
-                            <div class="vip-banner">
-                                🚀 <strong>VIP Upgrade Guide:</strong> Optimized pricing tips & smart acquisition path available.
-                            </div>
-                            <div class="media-tags">
-                                ${keywords.split(",").map(tag => `<span class="tag">#${tag.trim()}</span>`).join("")}
-                            </div>
-                        </div>
-                    `;
-                    galleryGrid.appendChild(article);
-
-                    // Inject structured JSON-LD Schema dynamically for rich search snippet indexing
-                    if (item.schema) {
-                        try {
-                            const scriptTag = document.createElement('script');
-                            scriptTag.type = 'application/ld+json';
-                            const schemaObj = typeof item.schema === 'string' ? JSON.parse(item.schema) : item.schema;
-                            scriptTag.textContent = JSON.stringify(schemaObj);
-                            schemaContainer.appendChild(scriptTag);
-                        } catch (e) {
-                            console.warn("Schema parse warning", e);
-                        }
-                    }
-                });
-            } catch (err) {
-                console.error('Fetch error:', err);
-                errorDiv.textContent = 'Error loading live content library data.';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadLiveGallery);
-    </script>
+    <script src="app.js" defer></script>
 </body>
 </html>
