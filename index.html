@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Media SEO & Deep Product Intelligence Suite</title>
-    <meta name="description" content="Advanced AI-powered media intelligence scanner featuring live web grounding, hardware comparison, SEO optimization, and automated spreadsheet storage.">
+    <title>Laboratory SEO Media Review Gallery & AI Intelligence</title>
+    <meta name="description" content="AI-grounded brand specifications, multi-model product comparisons, and VIP upgrade intelligence.">
     
-    <!-- Dynamic SEO Schema Injection Container -->
+    <!-- Dynamic SEO Schema Container for Google Crawlers -->
     <div id="seo-schema-container"></div>
 
     <style>
@@ -17,10 +17,8 @@
             --card-bg: #ffffff;
             --border-color: #dee2e6;
             --accent: #0d6efd;
-            --accent-hover: #0b5ed7;
-            --success: #198754;
             --vip-color: #e37400;
-            --radius: 12px;
+            --radius: 10px;
         }
 
         body.dark-mode {
@@ -41,320 +39,186 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
         header {
+            max-width: 1200px;
+            margin: 0 auto 24px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 16px;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            color: var(--text-muted);
             margin: 0;
+            font-size: 0.95rem;
         }
 
-        .scanner-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 24px;
+        .controls-bar {
+            max-width: 1200px;
+            margin: 0 auto 24px auto;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-        }
-
-        input[type="text"], select {
-            width: 100%;
+        .controls-bar input, .controls-bar select, .controls-bar button {
             padding: 10px 14px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            background: var(--bg-color);
+            background: var(--card-bg);
             color: var(--text-main);
             font-size: 0.95rem;
-            box-sizing: border-box;
         }
 
-        .button-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
+        .controls-bar input { flex: 1; min-width: 240px; }
+        .controls-bar button { cursor: pointer; font-weight: 600; }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
         }
 
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-            flex: 1;
-        }
-        .btn-primary:hover { background: var(--accent-hover); }
-
-        .btn-success {
-            background: var(--success);
-            color: #fff;
-        }
-
-        .loading-overlay {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            background: rgba(13, 110, 253, 0.05);
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px dashed var(--accent);
-        }
-
-        .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid var(--border-color);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px auto;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .output-section {
-            display: none;
+        .media-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 24px;
-            margin-top: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
         }
 
-        .meta-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
+        .media-figure {
+            margin: 0;
+            position: relative;
         }
 
-        .meta-box {
-            background: var(--bg-color);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            font-size: 0.88rem;
+        .media-content {
+            width: 100%;
+            height: 220px;
+            background: #000;
+            object-fit: cover;
         }
 
-        .meta-box strong { display: block; margin-bottom: 4px; color: var(--accent); }
+        .sr-only {
+            position: absolute;
+            width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
+
+        .media-info {
+            padding: 20px;
+        }
+
+        .media-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .media-desc {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
 
         .comparison-box {
-            background: rgba(13, 110, 253, 0.06);
+            background: rgba(13, 110, 253, 0.08);
             border-left: 4px solid var(--accent);
-            padding: 14px;
-            border-radius: 6px;
-            margin-bottom: 16px;
-            font-size: 0.92rem;
-            line-height: 1.5;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            line-height: 1.4;
         }
 
         .vip-banner {
-            background: rgba(227, 116, 0, 0.08);
+            background: rgba(227, 116, 0, 0.1);
             border-left: 4px solid var(--vip-color);
-            padding: 14px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 0.92rem;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
             color: var(--vip-color);
-            line-height: 1.5;
+            margin-bottom: 12px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .media-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            background: rgba(13, 110, 253, 0.1);
+            color: var(--accent);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
             font-weight: 500;
         }
 
-        .crawl-seo-tags {
-            font-family: monospace;
-            background: var(--bg-color);
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            overflow-x: auto;
-            border: 1px solid var(--border-color);
+        #error-message {
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #dc3545;
+            font-weight: 500;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .site-footer {
+            max-width: 1200px;
+            margin: 40px auto 0 auto;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
             color: var(--text-muted);
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-<div class="container" itemscope itemtype="https://schema.org/TechArticle">
-    <header>
-        <h1 itemprop="headline">AI Media Deep Scan & Grounded Intelligence</h1>
-        <button id="dark-mode-toggle" style="padding: 6px 12px; font-size: 0.8rem;">🌓 Theme</button>
-    </header>
-
-    <!-- Scanner Trigger Card -->
-    <div class="scanner-card">
-        <div class="form-group">
-            <label for="media-url-input">Media Asset URL (Video / Image)</label>
-            <input type="text" id="media-url-input" placeholder="https://example.com/media/sample-video.mp4" value="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
-        </div>
-
-        <div class="form-group">
-            <label for="product-context">Cascading Product Model / Search Context</label>
-            <input type="text" id="product-context" placeholder="e.g., Google Pixel 9 Pro vs Samsung Galaxy S24 Ultra" value="Google Pixel 9 Pro flagship specs and camera comparison">
-        </div>
-
-        <div class="button-group">
-            <button id="start-scan-btn" class="btn-primary">
-                🔍 Start Cascading Product Deep Scan & Grounding
-            </button>
-        </div>
-
-        <!-- Loading Panel -->
-        <div id="loading-panel" class="loading-overlay">
-            <div class="spinner"></div>
-            <h3 style="margin: 0 0 4px 0; font-size: 1rem;">Executing Live Web Grounding & Multimodal Scan...</h3>
-            <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Analyzing hardware specs, pricing benchmarks, and generating SEO schema.</p>
-        </div>
+<header>
+    <div>
+        <h1>Laboratory SEO Media Review Gallery</h1>
+        <p>AI-grounded brand specifications, product comparisons, and VIP upgrade intelligence.</p>
     </div>
+    <button id="dark-mode-toggle">🌓 Theme</button>
+</header>
 
-    <!-- Output Results Section -->
-    <div id="output-section" class="output-section">
-        <h2 style="margin-top: 0; font-size: 1.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">✨ Grounded Intelligence & SEO Metadata Output</h2>
-        
-        <div class="meta-grid">
-            <div class="meta-box">
-                <strong>SEO Title (< 60 chars)</strong>
-                <span id="out-title">-</span>
-            </div>
-            <div class="meta-box">
-                <strong>Keywords</strong>
-                <span id="out-keywords">-</span>
-            </div>
-        </div>
-
-        <div class="form-group meta-box" style="margin-bottom: 16px;">
-            <strong>Meta Description (150-160 chars)</strong>
-            <span id="out-desc">-</span>
-        </div>
-
-        <div class="comparison-box">
-            📊 <strong>Live Web-Grounded Comparison & Specs:</strong> <span id="out-comparison">-</span>
-        </div>
-
-        <div class="vip-banner">
-            🚀 <strong>VIP Upgrade Guidance & Pricing Intelligence:</strong> <span id="out-viptip">-</span>
-        </div>
-
-        <div class="form-group">
-            <label>HTML Crawl Tags & JSON-LD Schema (Ready for Crawlers)</label>
-            <div id="out-crawl-tags" class="crawl-seo-tags"></div>
-        </div>
-
-        <div class="button-group">
-            <button id="save-spreadsheet-btn" class="btn-success">
-                💾 Save All Intelligence to Google Spreadsheet
-            </button>
-        </div>
-        <div id="save-status" style="margin-top: 8px; font-size: 0.85rem; font-weight: 500;"></div>
-    </div>
+<div class="controls-bar">
+    <input type="text" id="search-input" placeholder="Search reviews, specs, or models...">
+    <select id="category-filter">
+        <option value="all">All Categories</option>
+        <option value="video">Video</option>
+        <option value="image">Image</option>
+    </select>
 </div>
 
-<script>
-    document.getElementById('dark-mode-toggle').addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-    });
+<div id="error-message"></div>
 
-    document.getElementById('start-scan-btn').addEventListener('click', async () => {
-        const urlInput = document.getElementById('media-url-input').value.trim();
-        const contextInput = document.getElementById('product-context').value.trim();
-        const loadingPanel = document.getElementById('loading-panel');
-        const outputSection = document.getElementById('output-section');
+<main id="gallery" class="gallery-container">
+    <!-- Cards will be dynamically injected here by app.js for Google Crawlers -->
+</main>
 
-        if (!urlInput || !contextInput) {
-            alert('Please provide both a Media URL and a Product Model context.');
-            return;
-        }
+<footer class="site-footer">
+    &copy; 2026 Laboratory SEO Media Review Gallery. All rights reserved.
+</footer>
 
-        loadingPanel.style.display = 'block';
-        outputSection.style.display = 'none';
-
-        // Simulate high-performance cascading web grounding & AI response generation
-        setTimeout(() => {
-            const mockGroundedResult = {
-                title: `${contextInput.slice(0, 45)} | Review & Specs`,
-                description: `Explore in-depth technical specifications, real-time benchmark scores, and insider VIP pricing trade-in advice for ${contextInput}. Upgrade smarter today!`,
-                keywords: `${contextInput}, flagship tech specs, camera benchmarks, AI performance, VIP deals`,
-                altText: `High-resolution visual inspection and hardware breakdown of ${contextInput}`,
-                schema: {
-                    "@context": "https://schema.org",
-                    "@type": "Product",
-                    "name": contextInput,
-                    "description": `Comprehensive market comparative analysis and performance review for ${contextInput}.`,
-                    "offers": { "@type": "Offer", "priceCurrency": "USD", "price": "999.00", "availability": "https://schema.org/InStock" }
-                },
-                comparison: `${contextInput} features advanced processor architectures and high-lumen OLED panels with 3,000+ nits peak brightness. Compared to prior market generations, real-world synthetic GPU scores show a 25% efficiency gain, while onboard neural processing units excel in real-time generative vocal and optical rendering.`,
-                vipTip: "To secure the best acquisition value, avoid standard MSRP windows. Take advantage of official seasonal trade-in promotions yielding up to $800 in bill credits, or bundle carrier-unlocked certified refurbished units after 6 months to save up to 30%."
-            };
-
-            // Populate UI Fields
-            document.getElementById('out-title').textContent = mockGroundedResult.title;
-            document.getElementById('out-desc').textContent = mockGroundedResult.description;
-            document.getElementById('out-keywords').textContent = mockGroundedResult.keywords;
-            document.getElementById('out-comparison').textContent = mockGroundedResult.comparison;
-            document.getElementById('out-viptip').textContent = mockGroundedResult.vipTip;
-
-            // Inject JSON-LD Schema into head for Crawler Indexing
-            const schemaContainer = document.getElementById('seo-schema-container');
-            schemaContainer.innerHTML = `<script type="application/ld+json">${JSON.stringify(mockGroundedResult.schema)}<\/script>`;
-
-            // Populate HTML Crawler Snippet for Crawlers
-            document.getElementById('out-crawl-tags').textContent = 
-`<meta name="title" content="${mockGroundedResult.title}">
-<meta name="description" content="${mockGroundedResult.description}">
-<meta name="keywords" content="${mockGroundedResult.keywords}">
-<link rel="canonical" href="${urlInput}">
-<script type="application/ld+json">
-${JSON.stringify(mockGroundedResult.schema, null, 2)}
-<\/script>`;
-
-            loadingPanel.style.display = 'none';
-            outputSection.style.display = 'block';
-            outputSection.scrollIntoView({ behavior: 'smooth' });
-        }, 2000);
-    });
-
-    document.getElementById('save-spreadsheet-btn').addEventListener('click', () => {
-        const statusDiv = document.getElementById('save-status');
-        statusDiv.style.color = 'var(--accent)';
-        statusDiv.textContent = 'Syncing and saving structured metadata to Google Spreadsheet cache...';
-
-        setTimeout(() => {
-            statusDiv.style.color = 'var(--success)';
-            statusDiv.textContent = '✓ Successfully saved and locked permanently to spreadsheet cache!';
-        }, 1200);
-    });
-</script>
-
+<script src="./app.js"></script>
 </body>
 </html>
