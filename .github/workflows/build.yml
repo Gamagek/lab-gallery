@@ -1,34 +1,57 @@
 name: Sync Spreadsheet Data & Build
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
-  build:
+  sync-media-feed:
+    name: Fetch and Update Data Feed
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Set up Node.js
+      - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Fetch JSON from Google Apps Script
+      - name: Fetch Live Feed from Google Apps Script
+        env:
+          GAS_URL: ${{ secrets.GAS_URL }}
         run: |
-          curl -L "${{ secrets.GAS_URL }}" -o data.json
-          jq empty data.json
+          if [ -z "$GAS_URL" ]; then
+            echo "::error::GAS_URL repository secret is missing or empty."
+            exit 1
+          fi
+          echo "Fetching latest SEO media JSON feed from Apps Script Web App..."
+          curl -sL -m 30 "$GAS_URL" -o temp_feed.json
+          if [ ! -s temp_feed.json ]; then
+            echo "::error::Received empty response from Apps Script URL."
+            exit 1
+          fi
 
-      - name: Commit and push if changed
+      - name: Validate and Format JSON
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          echo "Validating JSON payload structure with jq..."
+          if ! jq . temp_feed.json > data.json; then
+            echo "::error::Invalid JSON returned from Google Apps Script."
+            cat temp_feed.json
+            exit 1
+          fi
+          rm -f temp_feed.json
+          echo "Successfully formatted data.json"
+
+      - name: Commit and Push Changes to Main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout main || git checkout -b main
           git add data.json
-          git diff --staged --quiet || (git commit -m "Auto-update data.json from spreadsheet AI feed" && git pull origin main --rebase --autostash || true && git push origin main --force)
+          git diff --staged --quiet || (git commit -m "chore: sync automated SEO media feed [skip ci]" && git pull origin main --rebase --autostash || true && git push origin main --force)
