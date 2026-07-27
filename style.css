@@ -1,0 +1,60 @@
+/* style.css */
+:root {
+  --nobi-primary: #2563eb;
+  --nobi-primary-hover: #1d4ed8;
+  --nobi-bg: #f8fafc;
+  --nobi-text: #1e293b;
+  --nobi-radius: 8px;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--nobi-bg);
+  color: var(--nobi-text);
+  margin: 0;
+  padding: 2rem;
+}
+
+.nobi-container {
+  max-width: 480px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: var(--nobi-radius);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.nobi-btn {
+  display: inline-block;
+  width: 100%;
+  background-color: var(--nobi-primary);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--nobi-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.nobi-btn:hover {
+  background-color: var(--nobi-primary-hover);
+}
+
+.nobi-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--nobi-radius);
+  font-size: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+.nobi-input:focus {
+  outline: none;
+  border-color: var(--nobi-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
