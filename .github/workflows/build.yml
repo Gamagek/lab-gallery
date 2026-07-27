@@ -31,7 +31,7 @@ jobs:
             exit 1
           fi
           echo "Fetching latest SEO media JSON feed from Apps Script Web App..."
-          curl -sL -m 30 "$GAS_URL" -o temp_feed.json
+          curl -sL -m 60 "$GAS_URL" -o temp_feed.json
           if [ ! -s temp_feed.json ]; then
             echo "::error::Received empty response from Apps Script URL."
             exit 1
