@@ -1,33 +1,54 @@
-name: Sync Spreadsheet Data & Build
+name: LabGallery Build & Sync
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '0 * * * *'
 
+permissions:
+  contents: write
+
 jobs:
-  build:
+  update-feed:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Fetch JSON from Google Apps Script
+      - name: Install jq
         run: |
-          curl -L "https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec" -o data.json
-          jq empty data.json
+          sudo apt-get update
+          sudo apt-get install -y jq
 
-      - name: Commit and push if changed
+      - name: Verify Apps Script Health
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          curl -L "${{ secrets.APPS_SCRIPT_URL }}?action=health"
+
+      - name: Download JSON Feed
+        run: |
+          curl -L "${{ secrets.APPS_SCRIPT_URL }}?action=json" -o data.new.json
+          jq empty data.new.json
+
+      - name: Replace data.json
+        run: |
+          mv data.new.json data.json
+
+      - name: Configure Git
+        run: |
+          git config user.name "LabGallery Bot"
+          git config user.email "actions@github.com"
+
+      - name: Commit and Push Changes
+        run: |
           git add data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update data.json from spreadsheet AI feed" && git pull --rebase origin main && git push)
+          if git diff --cached --quiet; then
+            echo "No changes detected."
+          else
+            git commit -m "Auto-update data.json from Apps Script feed"
+            git pull --rebase origin main
+            git push
+          fi
