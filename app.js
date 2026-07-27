@@ -5,14 +5,15 @@ async function loadData() {
     const errorDiv = document.getElementById('error-message');
     const galleryGrid = document.getElementById('gallery');
     
-    // Show temporary loading panel while fetching live data
-    galleryGrid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">
-            <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
-            <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Live AI Intelligence & Media Feed...</h3>
-            <p style="margin: 0; color: var(--text-muted);">Fetching grounded specifications and market comparison data.</p>
-        </div>
-    `;
+    if (galleryGrid) {
+        galleryGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">
+                <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
+                <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Live AI Intelligence & Crawlable Feed...</h3>
+                <p style="margin: 0; color: var(--text-muted);">Retrieving grounded product specifications and pricing intelligence.</p>
+            </div>
+        `;
+    }
 
     try {
         const response = await fetch('./data.json', { cache: 'no-store' });
@@ -22,81 +23,67 @@ async function loadData() {
         globalData = Array.isArray(rawJson) ? rawJson : (rawJson.data || []);
 
         if (!Array.isArray(globalData) || globalData.length === 0) {
-            errorDiv.textContent = 'Content library is currently empty.';
-            galleryGrid.innerHTML = '';
+            if (errorDiv) errorDiv.textContent = 'Content library is currently empty.';
+            if (galleryGrid) galleryGrid.innerHTML = '';
             return;
         }
 
-        errorDiv.textContent = '';
+        if (errorDiv) errorDiv.textContent = '';
         renderCards(globalData);
         setupControls();
 
     } catch (err) {
         console.error('Fetch error:', err);
-        errorDiv.textContent = 'Error loading live content library data.';
-        galleryGrid.innerHTML = '';
+        if (errorDiv) errorDiv.textContent = 'Error loading live content library data.';
+        if (galleryGrid) galleryGrid.innerHTML = '';
     }
 }
 
 function renderCards(items) {
     const galleryGrid = document.getElementById('gallery');
-    const schemaContainer = document.getElementById('seo-schema-container');
+    const schemaContainer = document.getElementById('seo-schema-container') || document.head;
     
+    if (!galleryGrid) return;
     galleryGrid.innerHTML = '';
     
     items.forEach((item) => {
         const seo = item.seo || item;
-        const title = seo.title || item.seoTitle || item.cloudflareTitle || "Laboratory Review Media";
-        const desc = seo.description || item.description || "Detailed brand specification analysis and upgrade insights.";
-        const url = item.mediaUrl || item.url || "";
-        const alt = seo.altText || item.alt || title;
-        const keywordsRaw = seo.keywords || item.keywords || [];
+        const title = seo.title || item.rawTitle || "Laboratory Review Media";
+        const desc = seo.description || "Detailed brand specification analysis and upgrade insights.";
+        const url = item.imageUrl || item.url || "";
+        const alt = seo.altText || title;
+        const keywordsRaw = seo.keywords || [];
         const keywords = typeof keywordsRaw === 'string' ? keywordsRaw.split(",") : keywordsRaw;
 
-        let comparisonText = seo.comparison || item.comparison || "Detailed specs matrix: High-end optical sensor comparison verified.";
-        if (typeof comparisonText === 'object') {
-            comparisonText = comparisonText.marketComparison || JSON.stringify(comparisonText);
-        }
-
-        let vipText = seo.vipTip || item.vipTip || "Optimized pricing tips & smart acquisition path available.";
-        if (typeof vipText === 'object') {
-            vipText = vipText.summary || JSON.stringify(vipText);
-        }
+        const comparisonText = seo.comparison || "Detailed specs matrix: High-end optical sensor comparison verified.";
+        const vipText = seo.vipTip || "Optimized pricing tips & smart acquisition path available.";
 
         const article = document.createElement('article');
         article.className = 'media-card';
         article.setAttribute('itemscope', '');
-        article.setAttribute('itemtype', 'https://schema.org/VideoObject');
+        article.setAttribute('itemtype', 'https://schema.org/TechArticle');
 
-        const type = (item.category || item.type || "video").toLowerCase();
-        let mediaElement = '';
-        if (type.includes('image')) {
-            mediaElement = `<figure class="media-figure"><img src="${url}" alt="${alt}" loading="lazy" class="media-content"><figcaption class="sr-only">${alt}</figcaption></figure>`;
-        } else if (type.includes('audio')) {
-            mediaElement = `<figure class="media-figure"><audio controls preload="metadata" loading="lazy" class="media-content"><source src="${url}" type="audio/mpeg">Your browser does not support the audio tag.</audio><figcaption class="sr-only">${alt}</figcaption></figure>`;
-        } else {
-            mediaElement = `<figure class="media-figure"><video controls preload="metadata" loading="lazy" class="media-content"><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video><figcaption class="sr-only">${alt}</figcaption></figure>`;
-        }
+        let mediaElement = `<figure class="media-figure"><img src="${url}" alt="${alt}" loading="lazy" class="media-content" style="width:100%; height:220px; object-fit:cover;"><figcaption class="sr-only">${alt}</figcaption></figure>`;
 
         article.innerHTML = `
             ${mediaElement}
-            <div class="media-info">
-                <h2 class="media-title" itemprop="name">${title}</h2>
-                <p class="media-desc" itemprop="description">${desc}</p>
-                <div class="comparison-box" style="background: rgba(13, 110, 253, 0.08); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 4px; font-size: 0.88rem; margin-bottom: 10px; color: var(--text-main);">
+            <div class="media-info" style="padding: 20px;">
+                <h2 class="media-title" itemprop="headline" style="font-size: 1.2rem; margin-bottom: 8px;">${title}</h2>
+                <p class="media-desc" itemprop="description" style="font-size: 0.92rem; color: #6c757d; margin-bottom: 15px;">${desc}</p>
+                <div class="comparison-box" style="background: rgba(13, 110, 253, 0.08); border-left: 4px solid #0d6efd; padding: 10px 12px; border-radius: 4px; font-size: 0.88rem; margin-bottom: 10px;">
                     📊 <strong>Live Deep Scan & Comparison:</strong> ${comparisonText}
                 </div>
-                <div class="vip-banner">
+                <div class="vip-banner" style="background: rgba(227, 116, 0, 0.1); border-left: 4px solid #e37400; padding: 10px 12px; border-radius: 4px; font-size: 0.85rem; color: #e37400; margin-bottom: 12px; font-weight: 500;">
                     🚀 <strong>VIP Upgrade Guidance:</strong> ${vipText}
                 </div>
-                <div class="media-tags">
-                    ${keywords.map(tag => `<span class="tag">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
+                <div class="media-tags" style="display:flex; flex-wrap:wrap; gap:5px;">
+                    ${keywords.map(tag => `<span class="tag" style="background:rgba(13,110,253,0.1); color:#0d6efd; font-size:0.75rem; padding:3px 8px; border-radius:4px;">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
                 </div>
             </div>
         `;
         galleryGrid.appendChild(article);
 
-        const schemaObj = seo.schema || item.schema;
+        const schemaObj = seo.schema;
         if (schemaObj && Object.keys(schemaObj).length > 0) {
             try {
                 const scriptTag = document.createElement('script');
@@ -113,32 +100,25 @@ function renderCards(items) {
 function setupControls() {
     const searchInput = document.getElementById('search-input');
     const categoryFilter = document.getElementById('category-filter');
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
 
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            filterAndSearch(query, categoryFilter.value);
+            filterAndSearch(query, categoryFilter ? categoryFilter.value : 'all');
         });
     }
 
     if (categoryFilter) {
         categoryFilter.addEventListener('change', (e) => {
             const category = e.target.value;
-            filterAndSearch(searchInput.value.toLowerCase(), category);
-        });
-    }
-
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
+            filterAndSearch(searchInput ? searchInput.value.toLowerCase() : '', category);
         });
     }
 }
 
 function filterAndSearch(query, category) {
     const filtered = globalData.filter(item => {
-        const itemCat = (item.category || item.type || "").toLowerCase();
+        const itemCat = (item.category || "").toLowerCase();
         const matchesCategory = (category === 'all' || itemCat.includes(category.toLowerCase()));
         const seo = item.seo || item;
         const titleText = seo.title || "";
