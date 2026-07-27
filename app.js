@@ -5,12 +5,12 @@ async function loadData() {
     const errorDiv = document.getElementById('error-message');
     const galleryGrid = document.getElementById('gallery');
     
-    // Show permanent loading panel while fetching data
+    // Show temporary loading panel while fetching live data
     galleryGrid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">
             <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
             <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Live AI Intelligence & Media Feed...</h3>
-            <p style="margin: 0; color: var(--text-muted);">Performing deep scan and grounding comparison data. Please wait.</p>
+            <p style="margin: 0; color: var(--text-muted);">Fetching grounded specifications and market comparison data.</p>
         </div>
     `;
 
@@ -66,7 +66,7 @@ function renderCards(items) {
         const article = document.createElement('article');
         article.className = 'media-card';
         article.setAttribute('itemscope', '');
-        article.setAttribute('itemtype', '[https://schema.org/VideoObject](https://schema.org/VideoObject)');
+        article.setAttribute('itemtype', 'https://schema.org/VideoObject');
 
         const type = (item.category || item.type || "video").toLowerCase();
         let mediaElement = '';
