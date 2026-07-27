@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratory SEO Media Review Gallery</title>
-    
-    <!-- Dynamic Container for AI Schema Injection -->
     <div id="seo-schema-container"></div>
-
     <style>
         :root {
             --bg-color: #f8f9fa;
@@ -16,6 +13,7 @@
             --card-bg: #ffffff;
             --border-color: #dee2e6;
             --accent-color: #0d6efd;
+            --gemini-color: #1a73e8;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -40,17 +38,17 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
         }
         .media-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
         }
         .media-content {
             width: 100%;
@@ -73,14 +71,52 @@
             margin-bottom: 12px;
             line-height: 1.4;
         }
+        /* Gemini Flash Data Loading & Analysis Panel */
+        .gemini-panel {
+            background: #f1f3f4;
+            border-left: 4px solid var(--gemini-color);
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.82rem;
+        }
+        .gemini-header {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--gemini-color);
+            margin-bottom: 6px;
+        }
+        .gemini-header span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--gemini-color);
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .gemini-section {
+            margin-bottom: 6px;
+            color: #3c4043;
+        }
+        .gemini-section strong {
+            color: #202124;
+        }
         .media-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
+            margin-top: 10px;
         }
         .tag {
-            background: #e9ecef;
-            color: #495057;
+            background: #e8f0fe;
+            color: #1967d2;
             font-size: 0.75rem;
             padding: 3px 8px;
             border-radius: 4px;
@@ -99,7 +135,7 @@
 
     <header>
         <h1>Laboratory SEO Media Review Gallery</h1>
-        <p>Fully automated AI-scanned multimodal architecture with instant crawler indexing.</p>
+        <p>Fully automated Gemini multimodal architecture with live web research grounding & smart thinking panels.</p>
     </header>
 
     <div id="error-message"></div>
@@ -112,14 +148,10 @@
             const schemaContainer = document.getElementById('seo-schema-container');
             
             try {
-                // Fetch data.json with no-store cache control
                 const response = await fetch('./data.json', { cache: 'no-store' });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const items = await response.json();
-                
                 if (!Array.isArray(items) || items.length === 0) {
                     errorDiv.textContent = 'Content library is currently empty.';
                     return;
@@ -133,16 +165,14 @@
                     const card = document.createElement('div');
                     card.className = 'media-card';
                     
-                    // Format keywords into clean tag pills
                     let keywordsHtml = '';
                     if (item.keywords) {
-                        const tags = item.keywords.split(',');
-                        tags.forEach(tag => {
+                        item.keywords.split(',').forEach(tag => {
                             keywordsHtml += `<span class="tag">#${tag.trim()}</span>`;
                         });
                     }
 
-                    // Render HTML Card with Gemini SEO Metadata fields
+                    // Render card with Gemini Flash Intelligence Panel
                     card.innerHTML = `
                         <video controls class="media-content" preload="metadata">
                             <source src="${item.url || ''}" type="video/mp4">
@@ -151,29 +181,34 @@
                         <div class="media-info">
                             <div class="media-title">${item.title || 'AI Scanned Media'}</div>
                             <div class="media-desc">${item.description || ''}</div>
+                            
+                            <div class="gemini-panel">
+                                <div class="gemini-header"><span></span>Gemini Flash 2.5 Intelligence Engine</div>
+                                <div class="gemini-section"><strong>Smart Thinking:</strong> ${item.thinking || 'Processing frames...'}</div>
+                                <div class="gemini-section"><strong>Web Grounding:</strong> ${item.grounding || 'Fetching live context...'}</div>
+                            </div>
+
                             <div class="media-tags">${keywordsHtml}</div>
                         </div>
                     `;
                     galleryGrid.appendChild(card);
 
-                    // Inject structured JSON-LD Schema dynamically for SEO supremacy
                     if (item.schema) {
                         try {
                             const scriptTag = document.createElement('script');
                             scriptTag.type = 'application/ld+json';
-                            // If schema is stored as a string object, parse and stringify safely
                             const schemaObj = typeof item.schema === 'string' ? JSON.parse(item.schema) : item.schema;
                             scriptTag.textContent = JSON.stringify(schemaObj);
                             schemaContainer.appendChild(scriptTag);
                         } catch (e) {
-                            console.warn("Could not parse JSON-LD schema for item " + index, e);
+                            console.warn("Schema parse warning", e);
                         }
                     }
                 });
 
             } catch (err) {
                 console.error('Fetch error:', err);
-                errorDiv.textContent = 'Error loading AI-scanned content library.';
+                errorDiv.textContent = 'Error loading intelligence content library.';
             }
         }
 
