@@ -1,15 +1,10 @@
-Those red and green areas in your second and third screenshots show that **data.json is currently filled with HTML redirect text pointing to a Google Apps Script URL** instead of actual JSON data. Every time your GitHub Action runs, it is writing this error link into the file instead of fetching the real data, which is why your website keeps failing.
-### How to Fix It Immediately:
- 1. Go to your GitHub repository and open **data.json**.
- 2. **Delete everything inside the file completely.**
- 3. Paste this exact clean JSON code and click **Commit changes**:
-```json
-[
-  {
-    "title": "Laboratory Sample Item 1",
-    "description": "Static content library successfully loaded."
-  }
-]
-
-```
- 4. Since Cloudflare Pages has automatic deployments enabled (as seen in your first screenshot), **making this clean commit on GitHub will automatically trigger a brand-new successful deployment** without you needing to press any buttons on Cloudflare!
+<HTML>
+<HEAD>
+<TITLE>Moved Temporarily</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+<!-- GSE Default Error -->
+<H1>Moved Temporarily</H1>
+The document has moved <A HREF="https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQ-4zXZs5dVT94OtgjzSAhGC-ycr4S7Ji_P3QHUY3lc3zQDvSTiTRJh4hjXgMPDExnHlxQ2mfRWfskRSalrWJ4hMRBbVBPOzanU066-qzqIgrmnaGaHETzRlnHe9JZu5IsCxwrvcQ2mYEi1zJO8ALtCMY1CgB_TMtWzz_u_COHs9c8af-dGfRfdoQ0yQkw5OTLPebfL4b85QhTg5OLO-c6U_ngkCiRlzcvQsTUsa9gRIxTdbqDHBuRAdBp3LgcHfQQieR52mUr9-U5fK6qCTSooCmv1mA&amp;lib=M1b-aPdQIzcCLMlFYMPVhQGuk15K0cZ5i">here</A>.
+</BODY>
+</HTML>
