@@ -1,4 +1,4 @@
-name: LabGallery Build & Sync
+name: Sync Spreadsheet Data & Build
 
 on:
   workflow_dispatch:
@@ -24,13 +24,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Verify Apps Script Health
+      - name: Download JSON Feed from Apps Script
+        env:
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
         run: |
-          curl -L "${{ secrets.APPS_SCRIPT_URL }}?action=health"
-
-      - name: Download JSON Feed
-        run: |
-          curl -L "${{ secrets.APPS_SCRIPT_URL }}?action=json" -o data.new.json
+          curl -L "$APPS_SCRIPT_URL?action=json" -o data.new.json
           jq empty data.new.json
 
       - name: Replace data.json
@@ -39,7 +37,7 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "LabGallery Bot"
+          git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
 
       - name: Commit and Push Changes
