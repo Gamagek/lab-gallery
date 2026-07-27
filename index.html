@@ -4,145 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratory SEO Media Review Gallery</title>
+    <meta name="description" content="Fully automated AI-scanned media gallery featuring verified product reviews and technical breakdowns.">
     <div id="seo-schema-container"></div>
     <style>
-        :root {
-            --bg-color: #f8f9fa;
-            --text-main: #212529;
-            --text-muted: #6c757d;
-            --card-bg: #ffffff;
-            --border-color: #dee2e6;
-            --accent-color: #0d6efd;
-            --gemini-color: #1a73e8;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            max-width: 1200px;
-            margin: 0 auto 30px auto;
-        }
-        h1 {
-            font-size: 1.75rem;
-            margin-bottom: 5px;
-        }
-        p {
-            color: var(--text-muted);
-            margin-top: 0;
-        }
-        .gallery-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 24px;
-        }
-        .media-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
-        }
-        .media-content {
-            width: 100%;
-            height: 200px;
-            background: #000;
-            object-fit: cover;
-        }
-        .media-info {
-            padding: 18px;
-        }
-        .media-title {
-            font-weight: 700;
-            font-size: 1.15rem;
-            margin-bottom: 8px;
-            color: #111;
-        }
-        .media-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-        /* Gemini Flash Data Loading & Analysis Panel */
-        .gemini-panel {
-            background: #f1f3f4;
-            border-left: 4px solid var(--gemini-color);
-            border-radius: 6px;
-            padding: 12px;
-            margin-top: 12px;
-            font-size: 0.82rem;
-        }
-        .gemini-header {
-            display: flex;
-            align-items: center;
-            font-weight: 600;
-            color: var(--gemini-color);
-            margin-bottom: 6px;
-        }
-        .gemini-header span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--gemini-color);
-            border-radius: 50%;
-            margin-right: 6px;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        .gemini-section {
-            margin-bottom: 6px;
-            color: #3c4043;
-        }
-        .gemini-section strong {
-            color: #202124;
-        }
-        .media-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
-        }
-        .tag {
-            background: #e8f0fe;
-            color: #1967d2;
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        #error-message {
-            max-width: 1200px;
-            margin: 0 auto;
-            color: #dc3545;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
+        :root { --bg-color: #f8f9fa; --text-main: #212529; --text-muted: #6c757d; --card-bg: #ffffff; --border-color: #dee2e6; --accent: #1a73e8; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
+        header { max-width: 1200px; margin: 0 auto 30px auto; }
+        h1 { font-size: 1.8rem; margin-bottom: 5px; }
+        p { color: var(--text-muted); margin-top: 0; }
+        .gallery-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+        .media-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
+        .media-figure { margin: 0; position: relative; }
+        .media-content { width: 100%; height: 200px; background: #000; object-fit: cover; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+        .media-info { padding: 18px; }
+        .media-title { font-weight: 700; font-size: 1.15rem; margin-bottom: 8px; color: #111; }
+        .media-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
+        .media-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .tag { background: #e8f0fe; color: var(--accent); font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+        #error-message { max-width: 1200px; margin: 0 auto; color: #dc3545; font-weight: 500; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Laboratory SEO Media Review Gallery</h1>
-        <p>Fully automated Gemini multimodal architecture with live web research grounding & smart thinking panels.</p>
+        <p>AI-grounded multimodal architecture with live updates & crawler indexing.</p>
     </header>
 
     <div id="error-message"></div>
-    <main id="gallery" class="gallery-container"></main>
+    <main id="gallery" class="gallery-container" itemscope itemtype="https://schema.org/ImageGallery"></main>
 
     <script>
-        async function loadContentLibrary() {
+        async function loadLiveGallery() {
             const errorDiv = document.getElementById('error-message');
             const galleryGrid = document.getElementById('gallery');
             const schemaContainer = document.getElementById('seo-schema-container');
@@ -161,37 +55,35 @@
                 galleryGrid.innerHTML = '';
                 schemaContainer.innerHTML = '';
                 
-                items.forEach((item, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'media-card';
-                    
-                    let keywordsHtml = '';
-                    if (item.keywords) {
-                        item.keywords.split(',').forEach(tag => {
-                            keywordsHtml += `<span class="tag">#${tag.trim()}</span>`;
-                        });
-                    }
+                items.forEach((item) => {
+                    const title = item.title || "Laboratory Review Media";
+                    const desc = item.description || "AI-scanned technical review and breakdown.";
+                    const url = item.url || "";
+                    const alt = item.altText || title;
+                    const keywords = item.keywords || "tech, review";
 
-                    // Render card with Gemini Flash Intelligence Panel
-                    card.innerHTML = `
-                        <video controls class="media-content" preload="metadata">
-                            <source src="${item.url || ''}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                    const article = document.createElement('article');
+                    article.className = 'media-card';
+                    article.setAttribute('itemscope', '');
+                    article.setAttribute('itemtype', 'https://schema.org/VideoObject');
+
+                    article.innerHTML = `
+                        <figure class="media-figure">
+                            <video controls preload="metadata" loading="lazy" class="media-content">
+                                <source src="${url}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <figcaption class="sr-only">${alt}</figcaption>
+                        </figure>
                         <div class="media-info">
-                            <div class="media-title">${item.title || 'AI Scanned Media'}</div>
-                            <div class="media-desc">${item.description || ''}</div>
-                            
-                            <div class="gemini-panel">
-                                <div class="gemini-header"><span></span>Gemini Flash 2.5 Intelligence Engine</div>
-                                <div class="gemini-section"><strong>Smart Thinking:</strong> ${item.thinking || 'Processing frames...'}</div>
-                                <div class="gemini-section"><strong>Web Grounding:</strong> ${item.grounding || 'Fetching live context...'}</div>
+                            <h2 class="media-title" itemprop="name">${title}</h2>
+                            <p class="media-desc" itemprop="description">${desc}</p>
+                            <div class="media-tags">
+                                ${keywords.split(",").map(tag => `<span class="tag">#${tag.trim()}</span>`).join("")}
                             </div>
-
-                            <div class="media-tags">${keywordsHtml}</div>
                         </div>
                     `;
-                    galleryGrid.appendChild(card);
+                    galleryGrid.appendChild(article);
 
                     if (item.schema) {
                         try {
@@ -205,14 +97,13 @@
                         }
                     }
                 });
-
             } catch (err) {
                 console.error('Fetch error:', err);
-                errorDiv.textContent = 'Error loading intelligence content library.';
+                errorDiv.textContent = 'Error loading live content library data.';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadContentLibrary);
+        document.addEventListener('DOMContentLoaded', loadLiveGallery);
     </script>
 </body>
 </html>
