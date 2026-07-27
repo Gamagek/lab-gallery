@@ -1,14 +1,10 @@
-{
-  "status": "success",
-  "updatedAt": "2026-07-27T22:09:22.791Z",
-  "count": 1,
-  "data": [
-    {
-      "id": 1,
-      "mediaUrl": "https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4",
-      "category": "Video",
-      "prompt": "Lab Review 1",
-      "seo": null
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "type": "video",
+    "url": "https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4",
+    "rawTitle": "",
+    "category": "General",
+    "seo": {}
+  }
+]
