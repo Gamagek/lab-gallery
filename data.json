@@ -1,10 +1,11 @@
-<HTML>
-<HEAD>
-<TITLE>Moved Temporarily</TITLE>
-</HEAD>
-<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
-<!-- GSE Default Error -->
-<H1>Moved Temporarily</H1>
-The document has moved <A HREF="https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnS7zfbZk2aruh3RQ_Gs76lwQLbaYvfbQ5_X0BfLjGJfY8w0896eQ-2s5acCY5JBTR133ZtfUz3dZPSVhY_d2GLqClkk1R0QK0JoaYSD4LRxRNKc0lhQhkfKW_nmppc4MsfFx44hQ795IfF6X2nAEFJHdGFZ2rki6ZStxusihmJurf--nBcg4j_5dRq0JNtfNYaUZfPd42cYfiUxadMBrMPi9Qao_7gjrK1L4KgpRutsg5dT9DGMoV0iVcKqLObJqA0lJ6G3Stpp5rGwaBrZ6wf6d0NuTQ&amp;lib=M1b-aPdQIzcCLMlFYMPVhQGuk15K0cZ5i">here</A>.
-</BODY>
-</HTML>
+
+[
+  {
+    "title": "Laboratory Sample Item 1",
+    "description": "This is a working test entry loaded from static JSON storage."
+  },
+  {
+    "title": "Laboratory Sample Item 2",
+    "description": "Your Cloudflare Pages gallery is now reading data successfully."
+  }
+]
