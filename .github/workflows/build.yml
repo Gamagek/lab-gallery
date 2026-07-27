@@ -22,7 +22,7 @@ jobs:
 
       - name: Fetch JSON from Google Apps Script
         run: |
-          curl -L "${{ secrets.APPS_SCRIPT_URL }}" -o data.json
+          curl -L "${{ secrets.GAS_URL }}" -o data.json
           jq empty data.json
 
       - name: Commit and push if changed
