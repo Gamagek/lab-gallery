@@ -36,8 +36,25 @@ function renderCards(items) {
         const url = item.url || "";
         const alt = item.alt || title;
         const keywords = item.keywords || [];
-        const comparison = item.comparison || "Detailed specs matrix: High-end optical sensor comparison verified.";
-        const vipTip = item.vipTip || "Optimized pricing tips & smart acquisition path available.";
+        
+        // Safely extract comparison and vipTip whether they are strings or objects
+        let comparisonText = "Verified multi-angle hardware and spec analysis complete.";
+        if (item.comparison) {
+            if (typeof item.comparison === 'object') {
+                comparisonText = item.comparison.marketComparison || item.comparison.identifiedProduct || JSON.stringify(item.comparison);
+            } else {
+                comparisonText = item.comparison;
+            }
+        }
+
+        let vipText = "Optimized pricing path & smart acquisition guidance route ready.";
+        if (item.vipTip) {
+            if (typeof item.vipTip === 'object') {
+                vipText = item.vipTip.summary || (item.vipTip.upgradeRecommendations ? item.vipTip.upgradeRecommendations.join(", ") : JSON.stringify(item.vipTip));
+            } else {
+                vipText = item.vipTip;
+            }
+        }
 
         const article = document.createElement('article');
         article.className = 'media-card';
@@ -59,10 +76,10 @@ function renderCards(items) {
                 <h2 class="media-title" itemprop="name">${title}</h2>
                 <p class="media-desc" itemprop="description">${desc}</p>
                 <div class="comparison-box" style="background: rgba(13, 110, 253, 0.08); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 4px; font-size: 0.88rem; margin-bottom: 10px; color: var(--text-main);">
-                    📊 <strong>Live Deep Scan & Comparison:</strong> ${comparison}
+                    📊 <strong>Live Deep Scan & Comparison:</strong> ${comparisonText}
                 </div>
                 <div class="vip-banner">
-                    🚀 <strong>VIP Upgrade Guidance:</strong> ${vipTip}
+                    🚀 <strong>VIP Upgrade Guidance:</strong> ${vipText}
                 </div>
                 <div class="media-tags">
                     ${keywords.map(tag => `<span class="tag">#${tag.trim()}</span>`).join("")}
@@ -116,8 +133,6 @@ function filterAndSearch(query, category) {
         const matchesSearch = !query || 
             (item.seoTitle && item.seoTitle.toLowerCase().includes(query)) ||
             (item.description && item.description.toLowerCase().includes(query)) ||
-            (item.comparison && item.comparison.toLowerCase().includes(query)) ||
-            (item.vipTip && item.vipTip.toLowerCase().includes(query)) ||
             (item.keywords && item.keywords.some(k => k.toLowerCase().includes(query)));
         return matchesCategory && matchesSearch;
     });
