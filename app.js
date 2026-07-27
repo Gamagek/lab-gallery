@@ -9,8 +9,8 @@ async function loadData() {
         galleryGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">
                 <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
-                <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Live AI Intelligence & Crawlable Feed...</h3>
-                <p style="margin: 0; color: var(--text-muted);">Retrieving grounded product specifications and pricing intelligence.</p>
+                <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Live Crawlable Intelligence...</h3>
+                <p style="margin: 0; color: var(--text-muted);">Retrieving grounded multi-model specs and VIP pricing intelligence.</p>
             </div>
         `;
     }
@@ -50,7 +50,7 @@ function renderCards(items) {
         const seo = item.seo || item;
         const title = seo.title || item.rawTitle || "Laboratory Review Media";
         const desc = seo.description || "Detailed brand specification analysis and upgrade insights.";
-        const url = item.imageUrl || item.url || "";
+        const url = seo.imageUrl || item.url || "";
         const alt = seo.altText || title;
         const keywordsRaw = seo.keywords || [];
         const keywords = typeof keywordsRaw === 'string' ? keywordsRaw.split(",") : keywordsRaw;
