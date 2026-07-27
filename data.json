@@ -1,1 +1,16 @@
-[{"id":1,"type":"video","url":"https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4","title":"Lab Review 1","description":"","keywords":"","altText":"","schema":""}]
+[
+  {
+    "id": 1,
+    "type": "video",
+    "url": "https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4",
+    "rawTitle": "",
+    "seoTitle": "Lab Review 1",
+    "description": "",
+    "keywords": [],
+    "alt": "",
+    "schema": {},
+    "cloudflareTitle": "Lab Review 1",
+    "created": "2026-07-27T16:05:30.340Z",
+    "updated": "2026-07-27T16:05:30.341Z"
+  }
+]
