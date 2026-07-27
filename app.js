@@ -8,7 +8,10 @@ async function loadData() {
         const response = await fetch('./data.json', { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
-        globalData = await response.json();
+        const rawJson = await response.json();
+        // Handle both direct array format and wrapped feed formats ({ data: [...] })
+        globalData = Array.isArray(rawJson) ? rawJson : (rawJson.data || []);
+
         if (!Array.isArray(globalData) || globalData.length === 0) {
             errorDiv.textContent = 'Content library is currently empty.';
             return;
@@ -31,28 +34,32 @@ function renderCards(items) {
     galleryGrid.innerHTML = '';
     
     items.forEach((item) => {
-        const title = item.seoTitle || item.cloudflareTitle || "Laboratory Review Media";
-        const desc = item.description || "Detailed brand specification analysis and upgrade insights.";
-        const url = item.url || "";
-        const alt = item.alt || title;
-        const keywords = item.keywords || [];
-        
-        // Safely extract comparison and vipTip whether they are strings or objects
+        // Map fields from either direct sheet columns or wrapped .seo properties
+        const seo = item.seo || item;
+        const title = seo.title || item.seoTitle || item.cloudflareTitle || "Laboratory Review Media";
+        const desc = seo.description || item.description || "Detailed brand specification analysis and upgrade insights.";
+        const url = item.mediaUrl || item.url || "";
+        const alt = seo.altText || item.alt || title;
+        const keywordsRaw = seo.keywords || item.keywords || [];
+        const keywords = typeof keywordsRaw === 'string' ? keywordsRaw.split(",") : keywordsRaw;
+
         let comparisonText = "Verified multi-angle hardware and spec analysis complete.";
-        if (item.comparison) {
-            if (typeof item.comparison === 'object') {
-                comparisonText = item.comparison.marketComparison || item.comparison.identifiedProduct || JSON.stringify(item.comparison);
+        const compSource = seo.comparison || item.comparison;
+        if (compSource) {
+            if (typeof compSource === 'object') {
+                comparisonText = compSource.marketComparison || compSource.identifiedProduct || JSON.stringify(compSource);
             } else {
-                comparisonText = item.comparison;
+                comparisonText = compSource;
             }
         }
 
         let vipText = "Optimized pricing path & smart acquisition guidance route ready.";
-        if (item.vipTip) {
-            if (typeof item.vipTip === 'object') {
-                vipText = item.vipTip.summary || (item.vipTip.upgradeRecommendations ? item.vipTip.upgradeRecommendations.join(", ") : JSON.stringify(item.vipTip));
+        const vipSource = seo.vipTip || item.vipTip;
+        if (vipSource) {
+            if (typeof vipSource === 'object') {
+                vipText = vipSource.summary || (vipSource.upgradeRecommendations ? vipSource.upgradeRecommendations.join(", ") : JSON.stringify(vipSource));
             } else {
-                vipText = item.vipTip;
+                vipText = vipSource;
             }
         }
 
@@ -61,10 +68,11 @@ function renderCards(items) {
         article.setAttribute('itemscope', '');
         article.setAttribute('itemtype', 'https://schema.org/VideoObject');
 
+        const type = (item.category || item.type || "video").toLowerCase();
         let mediaElement = '';
-        if (item.type === 'image') {
+        if (type.includes('image')) {
             mediaElement = `<figure class="media-figure"><img src="${url}" alt="${alt}" loading="lazy" class="media-content"><figcaption class="sr-only">${alt}</figcaption></figure>`;
-        } else if (item.type === 'audio') {
+        } else if (type.includes('audio')) {
             mediaElement = `<figure class="media-figure"><audio controls preload="metadata" loading="lazy" class="media-content"><source src="${url}" type="audio/mpeg">Your browser does not support the audio tag.</audio><figcaption class="sr-only">${alt}</figcaption></figure>`;
         } else {
             mediaElement = `<figure class="media-figure"><video controls preload="metadata" loading="lazy" class="media-content"><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video><figcaption class="sr-only">${alt}</figcaption></figure>`;
@@ -82,17 +90,18 @@ function renderCards(items) {
                     🚀 <strong>VIP Upgrade Guidance:</strong> ${vipText}
                 </div>
                 <div class="media-tags">
-                    ${keywords.map(tag => `<span class="tag">#${tag.trim()}</span>`).join("")}
+                    ${keywords.map(tag => `<span class="tag">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
                 </div>
             </div>
         `;
         galleryGrid.appendChild(article);
 
-        if (item.schema && Object.keys(item.schema).length > 0) {
+        const schemaObj = seo.schema || item.schema;
+        if (schemaObj && Object.keys(schemaObj).length > 0) {
             try {
                 const scriptTag = document.createElement('script');
                 scriptTag.type = 'application/ld+json';
-                scriptTag.textContent = JSON.stringify(item.schema);
+                scriptTag.textContent = JSON.stringify(schemaObj);
                 schemaContainer.appendChild(scriptTag);
             } catch (e) {
                 console.warn("Schema insertion warning", e);
@@ -129,11 +138,14 @@ function setupControls() {
 
 function filterAndSearch(query, category) {
     const filtered = globalData.filter(item => {
-        const matchesCategory = (category === 'all' || item.type === category);
+        const itemCat = (item.category || item.type || "").toLowerCase();
+        const matchesCategory = (category === 'all' || itemCat.includes(category.toLowerCase()));
+        const seo = item.seo || item;
+        const titleText = seo.title || item.seoTitle || "";
+        const descText = seo.description || item.description || "";
         const matchesSearch = !query || 
-            (item.seoTitle && item.seoTitle.toLowerCase().includes(query)) ||
-            (item.description && item.description.toLowerCase().includes(query)) ||
-            (item.keywords && item.keywords.some(k => k.toLowerCase().includes(query)));
+            titleText.toLowerCase().includes(query) ||
+            descText.toLowerCase().includes(query);
         return matchesCategory && matchesSearch;
     });
     renderCards(filtered);
