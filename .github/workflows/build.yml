@@ -16,7 +16,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch data from Google Apps Script
-        run: curl -s "${{ secrets.GAS_URL }}" -o data.json
+        run: curl -sL "${{ secrets.GAS_URL }}" -o data.json
+
 
       - name: Commit and push if changed
         run: |
