@@ -1,17 +1,14 @@
-[
-  {
-    "id": 1,
-    "type": "video",
-    "url": "https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4",
-    "rawTitle": "",
-    "seoTitle": "Lab Review 1",
-    "description": "",
-    "keywords": [],
-    "alt": "",
-    "schema": {},
-    "comparison": "Lab Review 1",
-    "cloudflareTitle": "Lab Review 1",
-    "created": "2026-07-27T19:38:50.609Z",
-    "updated": "2026-07-27T19:38:50.610Z"
-  }
-]
+{
+  "status": "success",
+  "updatedAt": "2026-07-27T19:51:52.371Z",
+  "count": 1,
+  "data": [
+    {
+      "id": 1,
+      "mediaUrl": "https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4",
+      "category": "General",
+      "prompt": "Lab Review 1",
+      "seo": null
+    }
+  ]
+}
