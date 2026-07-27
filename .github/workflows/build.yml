@@ -2,51 +2,39 @@ name: Sync Spreadsheet Data & Build
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
   schedule:
-    - cron: '0 * * * *'
-
-permissions:
-  contents: write
+    - cron: '0 */6 * * *'
 
 jobs:
   update-feed:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Download JSON Feed from Apps Script
-        env:
-          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
         run: |
-          curl -L "$APPS_SCRIPT_URL?action=json" -o data.new.json
-          jq empty data.new.json
+          curl -L "${{ secrets.APPS_SCRIPT_URL }}?action=json" -o data.new.json
 
       - name: Replace data.json
         run: |
-          mv data.new.json data.json
+          if [ -s data.new.json ]; then
+            mv data.new.json data.json
+          else
+            echo "Downloaded JSON is empty"
+            exit 1
+          fi
 
       - name: Configure Git
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit and Push Changes
         run: |
           git add data.json
-          if git diff --cached --quiet; then
-            echo "No changes detected."
-          else
-            git commit -m "Auto-update data.json from Apps Script feed"
-            git pull --rebase origin main
-            git push
-          fi
+          git diff --staged --quiet || git commit -m "chore: update gallery data from spreadsheet [skip ci]"
+          git push
