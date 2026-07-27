@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratory SEO Media Review Gallery</title>
+    
+    <!-- Dynamic Container for AI Schema Injection -->
+    <div id="seo-schema-container"></div>
+
     <style>
         :root {
             --bg-color: #f8f9fa;
@@ -36,7 +40,7 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
         .media-card {
@@ -46,6 +50,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .media-content {
             width: 100%;
@@ -54,16 +59,32 @@
             object-fit: cover;
         }
         .media-info {
-            padding: 15px;
+            padding: 18px;
         }
         .media-title {
-            font-weight: 600;
-            font-size: 1.1rem;
+            font-weight: 700;
+            font-size: 1.15rem;
             margin-bottom: 8px;
+            color: #111;
         }
         .media-desc {
             font-size: 0.9rem;
             color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .media-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .tag {
+            background: #e9ecef;
+            color: #495057;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 500;
         }
         #error-message {
             max-width: 1200px;
@@ -78,7 +99,7 @@
 
     <header>
         <h1>Laboratory SEO Media Review Gallery</h1>
-        <p>Fully automated AI-moderated static architecture with instant crawler indexing.</p>
+        <p>Fully automated AI-scanned multimodal architecture with instant crawler indexing.</p>
     </header>
 
     <div id="error-message"></div>
@@ -88,9 +109,10 @@
         async function loadContentLibrary() {
             const errorDiv = document.getElementById('error-message');
             const galleryGrid = document.getElementById('gallery');
+            const schemaContainer = document.getElementById('seo-schema-container');
             
             try {
-                // Fetch data.json with no-store to prevent caching old responses
+                // Fetch data.json with no-store cache control
                 const response = await fetch('./data.json', { cache: 'no-store' });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -105,27 +127,53 @@
 
                 errorDiv.textContent = '';
                 galleryGrid.innerHTML = '';
+                schemaContainer.innerHTML = '';
                 
-                items.forEach(item => {
+                items.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'media-card';
                     
+                    // Format keywords into clean tag pills
+                    let keywordsHtml = '';
+                    if (item.keywords) {
+                        const tags = item.keywords.split(',');
+                        tags.forEach(tag => {
+                            keywordsHtml += `<span class="tag">#${tag.trim()}</span>`;
+                        });
+                    }
+
+                    // Render HTML Card with Gemini SEO Metadata fields
                     card.innerHTML = `
-                        <video controls class="media-content">
+                        <video controls class="media-content" preload="metadata">
                             <source src="${item.url || ''}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                         <div class="media-info">
-                            <div class="media-title">${item.title || 'Video Item ' + (item.id || '')}</div>
-                            <div class="media-desc">${item.description || 'Type: ' + (item.type || 'video')}</div>
+                            <div class="media-title">${item.title || 'AI Scanned Media'}</div>
+                            <div class="media-desc">${item.description || ''}</div>
+                            <div class="media-tags">${keywordsHtml}</div>
                         </div>
                     `;
                     galleryGrid.appendChild(card);
+
+                    // Inject structured JSON-LD Schema dynamically for SEO supremacy
+                    if (item.schema) {
+                        try {
+                            const scriptTag = document.createElement('script');
+                            scriptTag.type = 'application/ld+json';
+                            // If schema is stored as a string object, parse and stringify safely
+                            const schemaObj = typeof item.schema === 'string' ? JSON.parse(item.schema) : item.schema;
+                            scriptTag.textContent = JSON.stringify(schemaObj);
+                            schemaContainer.appendChild(scriptTag);
+                        } catch (e) {
+                            console.warn("Could not parse JSON-LD schema for item " + index, e);
+                        }
+                    }
                 });
 
             } catch (err) {
                 console.error('Fetch error:', err);
-                errorDiv.textContent = 'Error loading content library.';
+                errorDiv.textContent = 'Error loading AI-scanned content library.';
             }
         }
 
