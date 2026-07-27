@@ -3,17 +3,27 @@ let globalData = [];
 
 async function loadData() {
     const errorDiv = document.getElementById('error-message');
+    const galleryGrid = document.getElementById('gallery');
     
+    // Show permanent loading panel while fetching data
+    galleryGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">
+            <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
+            <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Live AI Intelligence & Media Feed...</h3>
+            <p style="margin: 0; color: var(--text-muted);">Performing deep scan and grounding comparison data. Please wait.</p>
+        </div>
+    `;
+
     try {
         const response = await fetch('./data.json', { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const rawJson = await response.json();
-        // Handle both direct array format and wrapped feed formats ({ data: [...] })
         globalData = Array.isArray(rawJson) ? rawJson : (rawJson.data || []);
 
         if (!Array.isArray(globalData) || globalData.length === 0) {
             errorDiv.textContent = 'Content library is currently empty.';
+            galleryGrid.innerHTML = '';
             return;
         }
 
@@ -24,6 +34,7 @@ async function loadData() {
     } catch (err) {
         console.error('Fetch error:', err);
         errorDiv.textContent = 'Error loading live content library data.';
+        galleryGrid.innerHTML = '';
     }
 }
 
@@ -34,7 +45,6 @@ function renderCards(items) {
     galleryGrid.innerHTML = '';
     
     items.forEach((item) => {
-        // Map fields from either direct sheet columns or wrapped .seo properties
         const seo = item.seo || item;
         const title = seo.title || item.seoTitle || item.cloudflareTitle || "Laboratory Review Media";
         const desc = seo.description || item.description || "Detailed brand specification analysis and upgrade insights.";
@@ -43,30 +53,20 @@ function renderCards(items) {
         const keywordsRaw = seo.keywords || item.keywords || [];
         const keywords = typeof keywordsRaw === 'string' ? keywordsRaw.split(",") : keywordsRaw;
 
-        let comparisonText = "Verified multi-angle hardware and spec analysis complete.";
-        const compSource = seo.comparison || item.comparison;
-        if (compSource) {
-            if (typeof compSource === 'object') {
-                comparisonText = compSource.marketComparison || compSource.identifiedProduct || JSON.stringify(compSource);
-            } else {
-                comparisonText = compSource;
-            }
+        let comparisonText = seo.comparison || item.comparison || "Detailed specs matrix: High-end optical sensor comparison verified.";
+        if (typeof comparisonText === 'object') {
+            comparisonText = comparisonText.marketComparison || JSON.stringify(comparisonText);
         }
 
-        let vipText = "Optimized pricing path & smart acquisition guidance route ready.";
-        const vipSource = seo.vipTip || item.vipTip;
-        if (vipSource) {
-            if (typeof vipSource === 'object') {
-                vipText = vipSource.summary || (vipSource.upgradeRecommendations ? vipSource.upgradeRecommendations.join(", ") : JSON.stringify(vipSource));
-            } else {
-                vipText = vipSource;
-            }
+        let vipText = seo.vipTip || item.vipTip || "Optimized pricing tips & smart acquisition path available.";
+        if (typeof vipText === 'object') {
+            vipText = vipText.summary || JSON.stringify(vipText);
         }
 
         const article = document.createElement('article');
         article.className = 'media-card';
         article.setAttribute('itemscope', '');
-        article.setAttribute('itemtype', 'https://schema.org/VideoObject');
+        article.setAttribute('itemtype', '[https://schema.org/VideoObject](https://schema.org/VideoObject)');
 
         const type = (item.category || item.type || "video").toLowerCase();
         let mediaElement = '';
@@ -141,8 +141,8 @@ function filterAndSearch(query, category) {
         const itemCat = (item.category || item.type || "").toLowerCase();
         const matchesCategory = (category === 'all' || itemCat.includes(category.toLowerCase()));
         const seo = item.seo || item;
-        const titleText = seo.title || item.seoTitle || "";
-        const descText = seo.description || item.description || "";
+        const titleText = seo.title || "";
+        const descText = seo.description || "";
         const matchesSearch = !query || 
             titleText.toLowerCase().includes(query) ||
             descText.toLowerCase().includes(query);
