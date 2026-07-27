@@ -50,7 +50,7 @@
         .media-content {
             width: 100%;
             height: 200px;
-            background: #e9ecef;
+            background: #000;
             object-fit: cover;
         }
         .media-info {
@@ -70,6 +70,7 @@
             margin: 0 auto;
             color: #dc3545;
             font-weight: 500;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -89,8 +90,8 @@
             const galleryGrid = document.getElementById('gallery');
             
             try {
-                // Fetch data.json from the absolute root relative path
-                const response = await fetch('./data.json');
+                // Fetch data.json with no-store to prevent caching old responses
+                const response = await fetch('./data.json', { cache: 'no-store' });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -102,15 +103,21 @@
                     return;
                 }
 
+                errorDiv.textContent = '';
                 galleryGrid.innerHTML = '';
+                
                 items.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'media-card';
                     
                     card.innerHTML = `
+                        <video controls class="media-content">
+                            <source src="${item.url || ''}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
                         <div class="media-info">
-                            <div class="media-title">${item.title || 'Untitled'}</div>
-                            <div class="media-desc">${item.description || ''}</div>
+                            <div class="media-title">${item.title || 'Video Item ' + (item.id || '')}</div>
+                            <div class="media-desc">${item.description || 'Type: ' + (item.type || 'video')}</div>
                         </div>
                     `;
                     galleryGrid.appendChild(card);
