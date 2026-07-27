@@ -3,7 +3,7 @@ name: Sync Spreadsheet Data & Build
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 * * * *'
 
 jobs:
   build:
@@ -20,13 +20,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Fetch Advanced AI Data from Google Apps Script
+      - name: Fetch JSON from Google Apps Script
         run: |
           curl -L "https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec" -o data.json
+          jq empty data.json
 
       - name: Commit and push if changed
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update data.json with deep brand comparisons and upgrade tips" && git pull --rebase origin main && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update data.json from spreadsheet AI feed" && git pull --rebase origin main && git push)
