@@ -128,7 +128,7 @@ function renderCards(items) {
                 scriptTag.textContent = JSON.stringify(schemaObj);
                 schemaContainer.appendChild(scriptTag);
             } catch (e) {
-                console.warn("Schema injection warning", e);
+                console.warn("Schema insertion warning", e);
             }
         }
     });
