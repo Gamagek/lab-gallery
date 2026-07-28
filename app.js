@@ -41,7 +41,6 @@ function renderCards(items) {
     galleryGrid.innerHTML = '';
     schemaContainer.innerHTML = '';
     
-    // Ensure smooth responsive grid layout container properties
     galleryGrid.style.display = 'grid';
     galleryGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(320px, 1fr))';
     galleryGrid.style.gap = '24px';
@@ -55,7 +54,6 @@ function renderCards(items) {
         const videoUrl = seo.videoUrl || (item.type === 'video' ? item.url : "");
         const imageUrl = seo.imageUrl || (item.type === 'image' ? item.url : "");
         const alt = seo.altText || title;
-        const keywordsRaw = seo.keywords || "";
         const comparisonText = seo.comparison || "Comprehensive benchmark audit comparing devices across optical sensors and performance thresholds.";
         const vipText = seo.vipTip || "Insider VIP Upgrade Trick: Avoid launch MSRP, leverage seasonal trade-in credits.";
 
@@ -72,7 +70,6 @@ function renderCards(items) {
             box-sizing: border-box;
             width: 100%;
             height: auto;
-            transition: transform 0.2s ease;
         `;
 
         let mediaElement = '';
@@ -96,25 +93,25 @@ function renderCards(items) {
                     🚀 <strong>VIP Upgrade Guidance:</strong> <span class="display-vip">${vipText}</span>
                 </div>
 
-                <!-- INLINE RESPONSIVE EDIT & PUBLISH PANEL -->
-                <details style="margin-top: auto; border-top: 1px dashed var(--border-color, #dee2e6); padding-top: 12px;">
-                    <summary style="cursor: pointer; font-weight: 600; font-size: 0.85rem; color: var(--accent, #0d6efd); user-select: none;">✏️ Edit & Publish Options for this Media</summary>
-                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+                <!-- FULLY VISIBLE INLINE EDIT & PUBLISH PANEL -->
+                <div style="margin-top: auto; border-top: 1px dashed var(--border-color, #dee2e6); padding-top: 14px; background: rgba(0,0,0,0.01); padding: 12px; border-radius: 8px;">
+                    <div style="font-weight: 700; font-size: 0.88rem; color: var(--accent, #0d6efd); margin-bottom: 10px;">✏️ Edit & Publish Web Grounding Panel</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
                         <div>
-                            <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Title</label>
-                            <input type="text" class="edit-title-input" value="${title}" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box;">
+                            <label style="font-size: 0.78rem; font-weight: 600; display: block; margin-bottom: 3px;">Edit Title</label>
+                            <input type="text" class="edit-title-input" value="${title}" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">
                         </div>
                         <div>
-                            <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">Comparison Details</label>
-                            <textarea class="edit-comp-input" rows="3" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box;">${comparisonText}</textarea>
+                            <label style="font-size: 0.78rem; font-weight: 600; display: block; margin-bottom: 3px;">Edit Comparison Details</label>
+                            <textarea class="edit-comp-input" rows="3" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">${comparisonText}</textarea>
                         </div>
                         <div>
-                            <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 3px;">VIP Tips</label>
-                            <textarea class="edit-vip-input" rows="2" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box;">${vipText}</textarea>
+                            <label style="font-size: 0.78rem; font-weight: 600; display: block; margin-bottom: 3px;">Edit VIP Upgrade Tips</label>
+                            <textarea class="edit-vip-input" rows="2" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">${vipText}</textarea>
                         </div>
                         <button onclick="publishCardChanges(${index})" style="background: #198754; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; width: 100%;">💾 Publish Changes Permanently</button>
                     </div>
-                </details>
+                </div>
             </div>
         `;
         galleryGrid.appendChild(card);
@@ -127,7 +124,7 @@ function renderCards(items) {
                 scriptTag.textContent = JSON.stringify(schemaObj);
                 schemaContainer.appendChild(scriptTag);
             } catch (e) {
-                console.warn("Schema injection warning", e);
+                console.warn("Schema insertion warning", e);
             }
         }
     });
@@ -142,7 +139,6 @@ function publishCardChanges(index) {
     const newComp = card.querySelector('.edit-comp-input').value;
     const newVip = card.querySelector('.edit-vip-input').value;
 
-    // Update globalData array state
     if (globalData[index]) {
         if (!globalData[index].seo) globalData[index].seo = {};
         globalData[index].seo.title = newTitle;
@@ -150,12 +146,11 @@ function publishCardChanges(index) {
         globalData[index].seo.vipTip = newVip;
     }
 
-    // Reflect instantly on UI
     card.querySelector('[itemprop="headline"]').textContent = newTitle;
     card.querySelector('.display-comp').textContent = newComp;
     card.querySelector('.display-vip').textContent = newVip;
 
-    alert('✓ Changes successfully updated for this media item!');
+    alert('✓ Changes successfully published for this media item!');
 }
 
 function setupControls() {
