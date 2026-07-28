@@ -4,36 +4,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloudflare Media & SEO Review Gallery</title>
+    <meta name="description" content="AI-grounded Cloudflare video streaming reviews, multi-device product comparisons, and VIP upgrade intelligence.">
+    
+    <!-- Dynamic SEO Schema Container for Google Crawlers -->
+    <div id="seo-schema-container"></div>
+
     <style>
-        :root { --bg: #f8f9fa; --card-bg: #ffffff; --text-main: #212529; --text-muted: #6c757d; --accent: #0d6efd; --border-color: #dee2e6; }
-        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 20px; box-sizing: border-box; }
-        header { max-width: 1200px; margin: 0 auto 24px auto; text-align: center; }
-        header h1 { margin: 0 0 8px 0; font-size: 1.8rem; }
-        header p { margin: 0 0 16px 0; color: var(--text-muted); font-size: 0.95rem; }
-        .search-container { max-width: 600px; margin: 0 auto; }
-        .search-container input { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; box-sizing: border-box; background: var(--card-bg); color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .main-wrap { max-width: 1200px; margin: 0 auto; }
-        footer { max-width: 1200px; margin: 40px auto 0 auto; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 20px; }
+        :root {
+            --bg-color: #f8f9fa;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+            --accent: #0d6efd;
+            --vip-color: #e37400;
+            --radius: 10px;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --accent: #3d8bfd;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 24px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 24px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 { font-size: 1.6rem; margin: 0 0 4px 0; }
+        p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+
+        .controls-bar {
+            max-width: 1200px;
+            margin: 0 auto 24px auto;
+            display: flex;
+            gap: 12px;
+        }
+
+        .controls-bar input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+        }
+
+        .media-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        }
+
+        .media-info { padding: 20px; }
+        .media-title { font-weight: 700; font-size: 1.25rem; margin-bottom: 10px; color: var(--text-main); }
+        .media-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+        .comparison-box {
+            background: rgba(13, 110, 253, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .vip-banner {
+            background: rgba(227, 116, 0, 0.1);
+            border-left: 4px solid var(--vip-color);
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--vip-color);
+            margin-bottom: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .tag {
+            background: rgba(13,110,253,0.1);
+            color: var(--accent);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .site-footer {
+            max-width: 1200px;
+            margin: 40px auto 0 auto;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
-    <header>
+<header>
+    <div>
         <h1>Cloudflare Media & SEO Review Gallery</h1>
-        <p>AI-grounded video streaming reviews, multi-tier intelligence, and VIP upgrade insights.</p>
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search reviews, specs, or models...">
-        </div>
-    </header>
+        <p>AI-grounded Cloudflare video bucket streaming reviews, multi-device product comparisons, and VIP upgrade intelligence.</p>
+    </div>
+    <button onclick="document.body.classList.toggle('dark-mode')" style="padding: 6px 12px; font-size: 0.8rem; cursor: pointer;">🌓 Theme</button>
+</header>
 
-    <main class="main-wrap">
-        <div id="public-gallery"></div>
-    </main>
+<div class="controls-bar">
+    <input type="text" id="search-input" placeholder="Search reviews, specs, or models...">
+</div>
 
-    <footer>
-        &copy; 2026 Cloudflare Media & SEO Review Gallery. All rights reserved.
-    </footer>
+<main id="gallery" class="gallery-container">
+    <!-- Dynamic cards injected here -->
+</main>
 
-    <script src="app.js"></script>
+<footer class="site-footer">
+    &copy; 2026 Cloudflare Media & SEO Review Gallery. All rights reserved.
+</footer>
+
+<script src="./app.js"></script>
 </body>
 </html>
