@@ -1,7 +1,7 @@
-// app.js
+// app.js - Cloudflare Media & Comparison Studio Frontend
 let globalData = [];
 const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec";
-const ADMIN_PASSWORD = "SecretAdminPassword123"; // Must match your Code.gs password
+const ADMIN_PASSWORD = "SecretAdminPassword123";
 
 async function loadData() {
     const galleryGrid = document.getElementById('public-gallery') || document.getElementById('gallery');
@@ -10,7 +10,7 @@ async function loadData() {
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg, #fff); border-radius: 12px; border: 1px solid var(--border-color, #dee2e6);">
                 <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
                 <h3 style="margin: 0 0 5px 0; color: var(--text-main, #212529);">Loading Intelligence Feed...</h3>
-                <p style="margin: 0; color: var(--text-muted, #6c757d);">Synchronizing live web grounding and SEO panels.</p>
+                <p style="margin: 0; color: var(--text-muted, #6c757d);">Synchronizing unblocked live web grounding and SEO panels.</p>
             </div>
         `;
     }
@@ -88,22 +88,22 @@ function renderCards(items) {
                 <p style="font-size: 0.92rem; color: var(--text-muted, #6c757d); margin: 0 0 14px 0; line-height: 1.6;" itemprop="description">${desc}</p>
                 
                 <div style="background: rgba(13, 110, 253, 0.06); border-left: 4px solid var(--accent, #0d6efd); padding: 10px 12px; border-radius: 4px; font-size: 0.88rem; margin-bottom: 10px; line-height: 1.5;">
-                    📊 <strong>Web-Grounded Comparison:</strong> <span class="display-comp">${comparisonText}</span>
+                    📊 <strong>Bright Data Unblocked Comparison:</strong> <span class="display-comp">${comparisonText}</span>
                 </div>
                 
                 <div style="background: rgba(227, 116, 0, 0.08); border-left: 4px solid #e37400; padding: 10px 12px; border-radius: 4px; font-size: 0.85rem; color: #e37400; font-weight: 500; margin-bottom: 14px; line-height: 1.5;">
                     🚀 <strong>VIP Upgrade Guidance & Pricing Tricks:</strong> <span class="display-vip">${vipText}</span>
                 </div>
 
-                <!-- LIVE GOOGLE SEARCH GROUNDING & EDIT PANEL -->
+                <!-- BRIGHT DATA UNBLOCKED GROUNDING & EDIT PANEL -->
                 <details style="margin-top: auto; border: 1px solid var(--border-color, #dee2e6); border-radius: 8px; padding: 12px; background: rgba(0,0,0,0.01);">
-                    <summary style="cursor: pointer; font-weight: 700; font-size: 0.88rem; color: var(--accent, #0d6efd); user-select: none;">⚡ Type 2+ Products & Run Live Web Grounding</summary>
+                    <summary style="cursor: pointer; font-weight: 700; font-size: 0.88rem; color: var(--accent, #0d6efd); user-select: none;">⚡ Run Unblocked Web Grounding</summary>
                     <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
                         <div>
-                            <label style="font-size: 0.78rem; font-weight: 600; display: block; margin-bottom: 3px;">Enter 2 or More Products to Compare</label>
-                            <input type="text" class="grounding-query-input" value="Google Pixel 9 Pro vs Samsung Galaxy S24 Ultra" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">
+                            <label style="font-size: 0.78rem; font-weight: 600; display: block; margin-bottom: 3px;">Enter Products to Compare</label>
+                            <input type="text" class="grounding-query-input" value="iPhone vs Samsung comparison" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">
                         </div>
-                        <button onclick="runLiveWebGrounding(${index})" class="ground-btn" style="background: var(--accent, #0d6efd); color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; width: 100%;">🌐 Run Real Google Search Grounding</button>
+                        <button onclick="runLiveWebGrounding(${index})" class="ground-btn" style="background: var(--accent, #0d6efd); color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; width: 100%;">🌐 Bypass Blocks & Fetch Clean Data</button>
 
                         <hr style="border: 0; border-top: 1px solid var(--border-color, #dee2e6); margin: 6px 0;">
 
@@ -123,7 +123,7 @@ function renderCards(items) {
                             <label style="font-size: 0.78rem; font-weight: 600; display: block; margin-bottom: 3px;">Edit Super Rich VIP Upgrade Tips</label>
                             <textarea class="edit-vip-input" rows="2" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">${vipText}</textarea>
                         </div>
-                        <button onclick="publishCardChanges(${index})" style="background: #198754; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; width: 100%;">💾 Publish Changes Permanently to HTML & Schema</button>
+                        <button onclick="publishCardChanges(${index})" style="background: #198754; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; width: 100%;">💾 Publish Changes Permanently</button>
                     </div>
                 </details>
             </div>
@@ -153,10 +153,10 @@ async function runLiveWebGrounding(index) {
     if (!card) return;
 
     const query = card.querySelector('.grounding-query-input').value.trim();
-    if (!query) { alert('Please enter products to compare.'); return; }
+    if (!query) { alert('Please enter comparison query.'); return; }
 
     const btn = card.querySelector('.ground-btn');
-    btn.textContent = "⏳ Fetching Real Google Search Data...";
+    btn.textContent = "⏳ Unblocking & Fetching Data...";
     btn.disabled = true;
 
     try {
@@ -182,15 +182,15 @@ async function runLiveWebGrounding(index) {
             card.querySelector('.edit-vip-input').value = d.vipTip || "";
             
             globalData[index].seo = d;
-            alert('✓ Live web-grounded data fetched successfully from Google Search! Review and click Publish.');
+            alert('✓ Unblocked web intelligence fetched successfully! Review and click Publish.');
         } else {
             alert('Grounding Error: ' + (res.error || 'Unknown error'));
         }
     } catch (err) {
         console.error(err);
-        alert('Network error connecting to Google Apps Script backend.');
+        alert('Network error connecting to backend.');
     } finally {
-        btn.textContent = "🌐 Run Real Google Search Grounding";
+        btn.textContent = "🌐 Bypass Blocks & Fetch Clean Data";
         btn.disabled = false;
     }
 }
@@ -224,7 +224,7 @@ function publishCardChanges(index) {
     card.querySelector('.display-comp').textContent = newComp;
     card.querySelector('.display-vip').textContent = newVip;
 
-    alert('✓ Changes successfully updated in view! Remember to save changes via your Admin Studio to lock them permanently into your Google Sheet and GitHub data.json feed.');
+    alert('✓ Changes published locally! Save via Admin Studio to persist permanently to your Sheet and feed.');
 }
 
 function setupControls() {
