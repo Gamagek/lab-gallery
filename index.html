@@ -17,7 +17,6 @@
             --card-bg: #ffffff;
             --border-color: #dee2e6;
             --accent: #0d6efd;
-            --vip-color: #e37400;
             --radius: 10px;
         }
 
@@ -59,12 +58,13 @@
 
         .controls-bar input {
             flex: 1;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             background: var(--card-bg);
             color: var(--text-main);
-            font-size: 0.95rem;
+            font-size: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
         .gallery-container {
@@ -85,30 +85,40 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.03);
         }
 
-        .media-info { padding: 20px; }
-        .media-title { font-weight: 700; font-size: 1.25rem; margin-bottom: 10px; color: var(--text-main); }
-        .media-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+        .media-info { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .media-title { font-weight: 700; font-size: 1.25rem; margin: 0; color: var(--text-main); }
+        .media-desc { font-size: 0.95rem; color: var(--text-muted); margin: 0; line-height: 1.6; }
 
-        .comparison-box {
-            background: rgba(13, 110, 253, 0.08);
-            border-left: 4px solid var(--accent);
-            padding: 12px 14px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            line-height: 1.5;
+        .edit-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
         }
 
-        .vip-banner {
-            background: rgba(227, 116, 0, 0.1);
-            border-left: 4px solid var(--vip-color);
-            padding: 12px 14px;
+        .edit-section input, .edit-section textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 0.9rem;
-            color: var(--vip-color);
-            margin-bottom: 16px;
-            font-weight: 500;
-            line-height: 1.5;
+            background: var(--card-bg);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        .action-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
         }
 
         .tag {
@@ -136,13 +146,13 @@
 <header>
     <div>
         <h1>Cloudflare Media & SEO Review Gallery</h1>
-        <p>AI-grounded Cloudflare video bucket streaming reviews, multi-device product comparisons, and VIP upgrade intelligence.</p>
+        <p>AI-grounded Cloudflare video bucket streaming reviews and multi-device product comparisons.</p>
     </div>
     <button onclick="document.body.classList.toggle('dark-mode')" style="padding: 6px 12px; font-size: 0.8rem; cursor: pointer;">🌓 Theme</button>
 </header>
 
 <div class="controls-bar">
-    <input type="text" id="search-input" placeholder="Search reviews, specs, or models...">
+    <input type="text" id="search-input" placeholder="Type search query to filter reviews, specs, or models...">
 </div>
 
 <main id="gallery" class="gallery-container">
