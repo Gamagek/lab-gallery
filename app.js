@@ -1,5 +1,7 @@
 // app.js
 let globalData = [];
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec";
+const ADMIN_PASSWORD = "SecretAdminPassword123"; // Must match your Code.gs password
 
 async function loadData() {
     const galleryGrid = document.getElementById('public-gallery') || document.getElementById('gallery');
@@ -7,8 +9,8 @@ async function loadData() {
         galleryGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg, #fff); border-radius: 12px; border: 1px solid var(--border-color, #dee2e6);">
                 <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
-                <h3 style="margin: 0 0 5px 0; color: var(--text-main, #212529);">Loading Grounding Studio Feed...</h3>
-                <p style="margin: 0; color: var(--text-muted, #6c757d);">Synchronizing multi-product comparison generator and live web grounding panels.</p>
+                <h3 style="margin: 0 0 5px 0; color: var(--text-main, #212529);">Loading Intelligence Feed...</h3>
+                <p style="margin: 0; color: var(--text-muted, #6c757d);">Synchronizing live web grounding and SEO panels.</p>
             </div>
         `;
     }
@@ -93,15 +95,15 @@ function renderCards(items) {
                     🚀 <strong>VIP Upgrade Guidance & Pricing Tricks:</strong> <span class="display-vip">${vipText}</span>
                 </div>
 
-                <!-- COLLAPSED REAL WEB GROUNDING COMPARISON & EDIT PANEL -->
+                <!-- LIVE GOOGLE SEARCH GROUNDING & EDIT PANEL -->
                 <details style="margin-top: auto; border: 1px solid var(--border-color, #dee2e6); border-radius: 8px; padding: 12px; background: rgba(0,0,0,0.01);">
-                    <summary style="cursor: pointer; font-weight: 700; font-size: 0.88rem; color: var(--accent, #0d6efd); user-select: none;">⚡ Type 2+ Products & Run Web Grounding Comparison</summary>
+                    <summary style="cursor: pointer; font-weight: 700; font-size: 0.88rem; color: var(--accent, #0d6efd); user-select: none;">⚡ Type 2+ Products & Run Live Web Grounding</summary>
                     <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
                         <div>
                             <label style="font-size: 0.78rem; font-weight: 600; display: block; margin-bottom: 3px;">Enter 2 or More Products to Compare</label>
-                            <input type="text" class="grounding-query-input" value="Google Pixel 9 Pro vs Samsung Galaxy S24 Ultra vs iPhone 16 Pro Max" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">
+                            <input type="text" class="grounding-query-input" value="Google Pixel 9 Pro vs Samsung Galaxy S24 Ultra" style="width: 100%; padding: 8px; border: 1px solid var(--border-color, #dee2e6); border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; background: #fff; color: #000;">
                         </div>
-                        <button onclick="runInlineGrounding(${index})" style="background: var(--accent, #0d6efd); color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; width: 100%;">🔍 Run Grounding Search & Generate Rich Suite</button>
+                        <button onclick="runLiveWebGrounding(${index})" class="ground-btn" style="background: var(--accent, #0d6efd); color: #fff; border: none; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; width: 100%;">🌐 Run Real Google Search Grounding</button>
 
                         <hr style="border: 0; border-top: 1px solid var(--border-color, #dee2e6); margin: 6px 0;">
 
@@ -145,7 +147,7 @@ function renderCards(items) {
     });
 }
 
-function runInlineGrounding(index) {
+async function runLiveWebGrounding(index) {
     const cards = document.querySelectorAll('.media-card');
     const card = cards[index];
     if (!card) return;
@@ -153,13 +155,44 @@ function runInlineGrounding(index) {
     const query = card.querySelector('.grounding-query-input').value.trim();
     if (!query) { alert('Please enter products to compare.'); return; }
 
-    // Simulated instant web grounding simulation for this specific card
-    card.querySelector('.edit-title-input').value = `${query.slice(0, 45)} | Flagship Comparison`;
-    card.querySelector('.edit-desc-input').value = `In-depth comparative analysis of ${query}. Evaluated multi-lens optical performance, thermal throttling thresholds, and real-world market pricing.`;
-    card.querySelector('.edit-comp-input').value = `Comprehensive live benchmark audit comparing [ ${query} ]. Evaluated neural processing units, camera sensor dynamic range, battery endurance under heavy load, and display refresh efficiency against rival flagships.`;
-    card.querySelector('.edit-vip-input').value = `Super Rich VIP Upgrade Trick: Avoid launch-window MSRP. Utilize carrier trade-in rebates offering up to $1,000 off or purchase certified open-box inventory after 90 days for an immediate 25% cost reduction.`;
+    const btn = card.querySelector('.ground-btn');
+    btn.textContent = "⏳ Fetching Real Google Search Data...";
+    btn.disabled = true;
 
-    alert('✓ Web Grounding comparison generated successfully! Review the fields below and click Publish Permanently.');
+    try {
+        const payload = {
+            action: "run_grounding_comparison",
+            password: ADMIN_PASSWORD,
+            comparisonQuery: query,
+            videoUrl: globalData[index].url || "",
+            imageUrl: ""
+        };
+
+        const response = await fetch(GAS_WEB_APP_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+        if (res.success && res.data) {
+            const d = res.data;
+            card.querySelector('.edit-title-input').value = d.title || "";
+            card.querySelector('.edit-desc-input').value = d.description || "";
+            card.querySelector('.edit-comp-input').value = d.comparison || "";
+            card.querySelector('.edit-vip-input').value = d.vipTip || "";
+            
+            globalData[index].seo = d;
+            alert('✓ Live web-grounded data fetched successfully from Google Search! Review and click Publish.');
+        } else {
+            alert('Grounding Error: ' + (res.error || 'Unknown error'));
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Network error connecting to Google Apps Script backend.');
+    } finally {
+        btn.textContent = "🌐 Run Real Google Search Grounding";
+        btn.disabled = false;
+    }
 }
 
 function publishCardChanges(index) {
@@ -191,7 +224,7 @@ function publishCardChanges(index) {
     card.querySelector('.display-comp').textContent = newComp;
     card.querySelector('.display-vip').textContent = newVip;
 
-    alert('✓ Changes successfully published permanently! JSON-LD schema & meta tags updated.');
+    alert('✓ Changes successfully updated in view! Remember to save changes via your Admin Studio to lock them permanently into your Google Sheet and GitHub data.json feed.');
 }
 
 function setupControls() {
