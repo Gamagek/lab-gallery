@@ -1,4 +1,4 @@
-name: Update Media Data
+name: Update Media Data & Generate Pages
 
 on:
   workflow_dispatch:
@@ -30,16 +30,52 @@ jobs:
           curl -L "$GAS_URL?action=json" -o data.json
           jq empty data.json
 
-      - name: Commit Changes
+      - name: Generate Static SEO Pages
+        run: |
+          mkdir -p pages
+          node -e '
+            const fs = require("fs");
+            const items = JSON.parse(fs.readFileSync("data.json", "utf8"));
+            items.forEach(item => {
+              if (!item.id) return;
+              const html = `<!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>${item.seoTitle || item.rawTitle || "AI Media Review"}</title>
+                  <meta name="description" content="${item.description || ""}">
+                  <meta name="keywords" content="${item.keywords || ""}">
+                  <meta property="og:title" content="${item.seoTitle || item.rawTitle || ""}">
+                  <meta property="og:description" content="${item.description || ""}">
+                  <meta property="og:type" content="article">
+                  <link rel="stylesheet" href="../style.css">
+              </head>
+              <body>
+                  <header>
+                      <h1>${item.seoTitle || item.rawTitle || ""}</h1>
+                  </header>
+                  <main style="max-width:800px; margin:20px auto; padding:20px; background:#fff; border-radius:8px;">
+                      <figure style="margin:0 0 20px 0;">
+                          ${item.type === "video" ? `<video controls style="width:100%"><source src="${item.url}"></video>` : `<img src="${item.url}" alt="${item.alt || item.rawTitle}" style="width:100%">`}
+                      </figure>
+                      <p>${item.description || ""}</p>
+                      <div style="margin-top:20px; padding:15px; background:#eef2f7; border-radius:5px;">
+                          🚀 <strong>VIP Upgrade Guide:</strong> Optimized pricing tips & smart acquisition path available on lowestitem.com.
+                      </div>
+                  </main>
+                  <script type="application/ld+json">${JSON.stringify(item.schema || {})}</script>
+              </body>
+              </html>`;
+              fs.writeFileSync(`pages/${item.id}.html`, html);
+            });
+          '
+
+      - name: Commit and Push Changes
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data.json
+          git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update media data from Apps Script"
-
-      - name: Push Changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          git commit -m "Auto update media data and static SEO pages"
+          git push
