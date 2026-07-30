@@ -1,57 +1,45 @@
-name: Sync Spreadsheet Data & Build
+name: Update Media Data
 
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 */6 * * *" # Every 6 hours
+
+permissions:
+  contents: write
 
 jobs:
-  sync-media-feed:
-    name: Fetch and Update Data Feed
+  update:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
 
-      - name: Fetch Live Feed from Google Apps Script
+      - name: Download JSON Feed
         env:
-          GAS_URL: ${{ secrets.GAS_URL }}
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
         run: |
-          if [ -z "$GAS_URL" ]; then
-            echo "::error::GAS_URL repository secret is missing or empty."
-            exit 1
-          fi
-          echo "Fetching latest SEO media JSON feed from Apps Script Web App..."
-          curl -sL -m 60 "$GAS_URL" -o temp_feed.json
-          if [ ! -s temp_feed.json ]; then
-            echo "::error::Received empty response from Apps Script URL."
-            exit 1
-          fi
+          curl -L "$APPS_SCRIPT_URL?action=json" -o data.json
+          jq empty data.json
 
-      - name: Validate and Format JSON
+      - name: Commit Changes
         run: |
-          echo "Validating JSON payload structure with jq..."
-          if ! jq . temp_feed.json > data.json; then
-            echo "::error::Invalid JSON returned from Google Apps Script."
-            cat temp_feed.json
-            exit 1
-          fi
-          rm -f temp_feed.json
-          echo "Successfully formatted data.json"
-
-      - name: Commit and Push Changes to Main
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout main || git checkout -b main
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git add data.json
-          git diff --staged --quiet || (git commit -m "chore: sync automated SEO media feed [skip ci]" && git pull origin main --rebase --autostash || true && git push origin main --force)
+          git diff --cached --quiet || \
+          git commit -m "Auto update media data from Apps Script"
+
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
