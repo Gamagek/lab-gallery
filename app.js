@@ -2,8 +2,8 @@
 
 let media = [];
 
-// Load JSON data
-fetch("data.json")
+// Load JSON data with cache control
+fetch("data.json", { cache: "no-store" })
     .then(res => res.json())
     .then(data => {
         media = data;
@@ -13,11 +13,11 @@ fetch("data.json")
         console.error("Error loading data.json:", err);
         const gallery = document.getElementById("gallery");
         if (gallery) {
-            gallery.innerHTML = "<p style='padding: 20px; color: red;'>Error loading media content library.</p>";
+            gallery.innerHTML = "<p style='padding: 20px; color: red; text-align: center;'>Error loading media content library.</p>";
         }
     });
 
-// Render Gallery
+// Render Gallery Cards
 function render(items) {
     const gallery = document.getElementById("gallery");
     if (!gallery) return;
@@ -57,7 +57,7 @@ function render(items) {
             <figure>
                 <a href="${pageLink}">${mediaHTML}</a>
                 <figcaption>
-                    <h2><a href="${pageLink}" style="text-decoration:none; color:inherit;">${escapeHTML(title)}</a></h2>
+                    <h2><a href="${pageLink}">${escapeHTML(title)}</a></h2>
                     <p>${escapeHTML(description)}</p>
                     <small>${escapeHTML(keywords)}</small>
                 </figcaption>
