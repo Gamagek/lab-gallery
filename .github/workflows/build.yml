@@ -25,9 +25,9 @@ jobs:
 
       - name: Download JSON Feed
         env:
-          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+          GAS_URL: ${{ secrets.GAS_URL }}
         run: |
-          curl -L "$APPS_SCRIPT_URL?action=json" -o data.json
+          curl -L "$GAS_URL?action=json" -o data.json
           jq empty data.json
 
       - name: Commit Changes
