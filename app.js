@@ -29,11 +29,12 @@ function render(items) {
         let mediaHTML = "";
         
         const type = (item.type || "").toLowerCase();
-        const title = item.seoTitle || item.title || item.cloudflareTitle || "Media Review";
+        const title = item.seoTitle || item.rawTitle || "Media Review";
         const description = item.description || "";
         const keywords = item.keywords || "";
         const alt = item.alt || title;
         const url = item.url || "";
+        const pageLink = item.id ? `pages/${item.id}.html` : "#";
 
         if (type === "video") {
             mediaHTML = `
@@ -54,9 +55,9 @@ function render(items) {
         
         article.innerHTML = `
             <figure>
-                ${mediaHTML}
+                <a href="${pageLink}">${mediaHTML}</a>
                 <figcaption>
-                    <h2>${escapeHTML(title)}</h2>
+                    <h2><a href="${pageLink}" style="text-decoration:none; color:inherit;">${escapeHTML(title)}</a></h2>
                     <p>${escapeHTML(description)}</p>
                     <small>${escapeHTML(keywords)}</small>
                 </figcaption>
@@ -85,7 +86,7 @@ if (searchInput) {
     searchInput.addEventListener("input", e => {
         const q = e.target.value.toLowerCase().trim();
         const filtered = media.filter(item => {
-            const title = (item.seoTitle || item.title || "").toLowerCase();
+            const title = (item.seoTitle || item.rawTitle || "").toLowerCase();
             const desc = (item.description || "").toLowerCase();
             const keys = (item.keywords || "").toLowerCase();
             return title.includes(q) || desc.includes(q) || keys.includes(q);
