@@ -30,12 +30,16 @@ jobs:
           curl -L "$GAS_URL?action=json" -o data.json
           jq empty data.json
 
-      - name: Generate Static SEO Pages
+      - name: Generate Static SEO Pages with Comparison Panel
+        env:
+          GAS_URL: ${{ secrets.GAS_URL }}
         run: |
           mkdir -p pages
           node -e '
             const fs = require("fs");
             const items = JSON.parse(fs.readFileSync("data.json", "utf8"));
+            const gasUrl = process.env.GAS_URL;
+
             items.forEach(item => {
               if (!item.id) return;
               const html = `<!DOCTYPE html>
@@ -54,17 +58,52 @@ jobs:
               <body>
                   <header>
                       <h1>${item.seoTitle || item.rawTitle || ""}</h1>
+                      <p>Specification breakdown & multi-product analysis</p>
                   </header>
-                  <main style="max-width:800px; margin:20px auto; padding:20px; background:#fff; border-radius:8px;">
-                      <figure style="margin:0 0 20px 0;">
-                          ${item.type === "video" ? `<video controls style="width:100%"><source src="${item.url}"></video>` : `<img src="${item.url}" alt="${item.alt || item.rawTitle}" style="width:100%">`}
-                      </figure>
-                      <p>${item.description || ""}</p>
-                      <div style="margin-top:20px; padding:15px; background:#eef2f7; border-radius:5px;">
-                          🚀 <strong>VIP Upgrade Guide:</strong> Optimized pricing tips & smart acquisition path available on lowestitem.com.
-                      </div>
+                  <main style="max-width:800px; margin:20px auto; padding:20px;">
+                      <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
+                          <figure style="margin:0 0 20px 0;">
+                              ${item.type === "video" ? `<video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="${item.url}"></video>` : `<img src="${item.url}" alt="${item.alt || item.rawTitle}" style="width:100%; aspect-ratio:16/9; object-fit:cover;">`}
+                          </figure>
+                          <p style="color:#555; margin-bottom:20px;">${item.description || ""}</p>
+                          
+                          <!-- Cascading Product Comparison Panel -->
+                          <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
+                              <h3 style="margin-bottom:10px; font-size:18px;">⚡ Multi-Product Comparison Hub</h3>
+                              <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, pricing, pros & cons using real-time web grounding.</p>
+                              <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16 vs Xiaomi" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px;">
+                              <button onclick="runComparison('${item.id}', '${gasUrl}')" style="width:100%;">Compare Products</button>
+                              <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; white-space:pre-wrap;"></div>
+                          </div>
+                      </article>
                   </main>
-                  <script type="application/ld+json">${JSON.stringify(item.schema || {})}</script>
+                  <script>
+                    async function runComparison(id, apiUrl) {
+                      const query = document.getElementById("compare-query-" + id).value;
+                      const resultDiv = document.getElementById("comparison-result-" + id);
+                      if (!query) {
+                        alert("Please enter products to compare!");
+                        return;
+                      }
+                      resultDiv.innerHTML = "⏳ Grounding and analyzing data...";
+                      try {
+                        const response = await fetch(apiUrl, {
+                          method: "POST",
+                          headers: { "Content-Type": "text/plain;charset=utf-8" },
+                          body: JSON.stringify({ action: "compare", query: query })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                          resultDiv.innerHTML = "<strong>Analysis Results:</strong><br>" + data.result;
+                        } else {
+                          resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
+                        }
+                      } catch (err) {
+                        resultDiv.innerHTML = "Connection error: " + err.toString();
+                      }
+                    }
+                  <\/script>
+                  <script type="application/ld+json">${JSON.stringify(item.schema || {})}<\/script>
               </body>
               </html>`;
               fs.writeFileSync(`pages/${item.id}.html`, html);
@@ -77,5 +116,5 @@ jobs:
           git config user.email "github-actions@github.com"
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update media data and static SEO pages"
+          git commit -m "Auto update media data and static comparison pages"
           git push
