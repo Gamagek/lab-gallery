@@ -30,7 +30,7 @@ jobs:
           curl -L "$GAS_URL?action=json" -o data.json
           jq empty data.json
 
-      - name: Generate Static SEO Pages
+      - name: Generate Static SEO Pages with Interactive Comparison & Admin Suite
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
         run: |
@@ -62,16 +62,66 @@ jobs:
               "    </header>\n" +
               "    <main style=\"max-width:800px; margin:20px auto; padding:20px;\">\n" +
               "        <article style=\"background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;\">\n" +
+              "            \n" +
+              "            <!-- Admin Login & Controls Bar -->\n" +
+              "            <div style=\"text-align:right; margin-bottom:15px;\">\n" +
+              "                <button onclick=\"toggleAdmin()\" style=\"background:#475569; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-size:12px; cursor:pointer;\">🔐 Admin Mode</button>\n" +
+              "            </div>\n" +
+              "            \n" +
+              "            <div id=\"admin-panel-box\" style=\"display:none; background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:20px;\">\n" +
+              "                <p style=\"font-size:13px; font-weight:bold; margin-bottom:8px;\">Admin Authentication & AI Generator:</p>\n" +
+              "                <input type=\"password\" id=\"admin-pwd\" placeholder=\"Enter Admin Password\" style=\"width:100%; padding:8px; margin-bottom:8px; border:1px solid #cbd5e1; border-radius:4px;\">\n" +
+              "                <input type=\"text\" id=\"compare-query-" + item.id + "\" placeholder=\"Products to compare (e.g. S26 vs iPhone 17)\" style=\"width:100%; padding:8px; margin-bottom:8px; border:1px solid #cbd5e1; border-radius:4px;\">\n" +
+              "                <button onclick=\"runAICompare('" + item.id + "', '" + gasUrl + "')\" style=\"background:#2563eb; color:#fff; border:none; padding:8px 14px; border-radius:4px; width:100%; cursor:pointer;\">⚡ Generate AI Comparison</button>\n" +
+              "            </div>\n" +
+
+              "            <!-- Public Scraped SEO Content Area -->\n" +
               "            <div id=\"public-seo-content\" style=\"margin-bottom:20px;\">\n" +
               (item.customImage ? "                <img src=\"" + item.customImage + "\" alt=\"VIP Banner\" style=\"width:100%; max-height:250px; object-fit:cover; border-radius:8px; margin-bottom:15px;\">\n" : "") +
-              "                <div id=\"rendered-seo-body\">" + (item.customContent ? item.customContent : "<p style=\"color:#64748b;\">No custom comparison published yet.</p>") + "</div>\n" +
+              "                <div id=\"rendered-seo-body\">" + (item.customContent ? item.customContent : "<p style=\"color:#64748b;\">Use the Admin Mode button above to generate and publish comparison insights.</p>") + "</div>\n" +
               "            </div>\n" +
+
               "            <figure style=\"margin:20px 0 20px 0;\">\n" +
               (item.type === "video" ? "                <video controls style=\"width:100%; aspect-ratio:16/9; object-fit:cover;\"><source src=\"" + item.url + "\"></video>\n" : "                <img src=\"" + item.url + "\" alt=\"" + (item.alt || item.rawTitle) + "\" style=\"width:100%; aspect-ratio:16/9; object-fit:cover;\">\n") +
               "            </figure>\n" +
               "            <p style=\"color:#555;\">" + (item.description || "") + "</p>\n" +
               "        </article>\n" +
               "    </main>\n" +
+              "    \n" +
+              "    <script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script>\n" +
+              "    <script>\n" +
+              "        function toggleAdmin() {\n" +
+              "            const panel = document.getElementById(\"admin-panel-box\");\n" +
+              "            panel.style.display = panel.style.display === \"none\" ? \"block\" : \"none\";\n" +
+              "        }\n" +
+              "        async function runAICompare(id, apiUrl) {\n" +
+              "            const pwd = document.getElementById(\"admin-pwd\").value;\n" +
+              "            const query = document.getElementById(\"compare-query-\" + id).value;\n" +
+              "            const resultBox = document.getElementById(\"rendered-seo-body\");\n" +
+              "            if(!pwd || !query) { alert(\"Please enter both password and comparison query!\"); return; }\n" +
+              "            resultBox.innerHTML = \"⏳ Grounding and calculating VIP upgrade intelligence...\";\n" +
+              "            try {\n" +
+              "                const res = await fetch(apiUrl, {\n" +
+              "                    method: \"POST\",\n" +
+              "                    headers: { \"Content-Type\": \"text/plain;charset=utf-8\" },\n" +
+              "                    body: JSON.stringify({ action: \"compare\", password: pwd, query: query })\n" +
+              "                });\n" +
+              "                const data = await res.json();\n" +
+              "                if(data.success) {\n" +
+              "                    let text = data.result;\n" +
+              "                    text = text.replace(/\\+(\\d+)%/g, (match, p1) => {\n" +
+              "                        const val = Math.min(parseInt(p1), 100);\n" +
+              "                        return '<div style=\"margin: 8px 0;\"><span style=\"font-weight: bold; color: #16a34a;\">+' + val + '% Performance Boost</span><div style=\"background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;\"><div style=\"background: #22c55e; height: 100%; width: ' + val + '%;\"></div></div></div>';\n" +
+              "                    });\n" +
+              "                    resultBox.innerHTML = marked.parse(text);\n" +
+              "                } else {\n" +
+              "                    resultBox.innerHTML = \"<p style='color:red;'>Error: \" + (data.error || \"Authentication failed\") + \"</p>\";\n" +
+              "                }\n" +
+              "            } catch(err) {\n" +
+              "                resultBox.innerHTML = \"<p style='color:red;'>Connection error.</p>\";\n" +
+              "            }\n" +
+              "        }\n" +
+              "    </script>\n" +
               "    <script type=\"application/ld+json\">" + JSON.stringify(item.schema || {}) + "</script>\n" +
               "</body>\n" +
               "</html>";
@@ -86,5 +136,5 @@ jobs:
           git pull origin main --rebase || true
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update static pages securely"
+          git commit -m "Restore interactive comparison and admin panel"
           git push origin main
