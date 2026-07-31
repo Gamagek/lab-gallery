@@ -29,20 +29,6 @@
                   <div id="rendered-seo-body"><p style="color:#64748b;">No custom comparison published yet. Use the comparison tool above or edit below.</p></div>
               </div>
 
-              <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid #cbd5e1;">
-                  <details>
-                      <summary style="font-weight:bold; font-size:14px; cursor:pointer; color:#1e293b;">🛠️ Edit Content & Header Image</summary>
-                      <div style="margin-top:10px;">
-                          <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Top Header Image URL (Not bigger than media file):</label>
-                          <input type="text" id="edit-img-1" value="" placeholder="https://..." style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #cbd5e1; border-radius:4px;">
-                          <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Editable HTML / Markdown Content:</label>
-                          <textarea id="edit-content-1" rows="6" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:4px; font-family:monospace; font-size:12px;"></textarea>
-                          <button onclick="applyEdits('1')" style="background:#16a34a; color:#fff; border:none; padding:8px 14px; border-radius:4px; margin-top:6px; cursor:pointer; font-weight:bold;">💾 Save & Apply Locally</button>
-                          <p style="font-size:11px; color:#64748b; margin-top:4px;">Copy the updated HTML/Markdown into your Google Sheet cell (CustomContent & CustomImage columns) to update permanently across builds.</p>
-                      </div>
-                  </details>
-              </div>
-
               <figure style="margin:20px 0 20px 0;">
                   <video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4"></video>
               </figure>
@@ -100,21 +86,12 @@
                           return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;"></div></div></div>';
                       });
                       resultDiv.innerHTML = marked.parse(text);
-                      document.getElementById("edit-content-" + id).value = text;
                   } else {
                       resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
                   }
               } catch (err) {
                   resultDiv.innerHTML = "Connection error: " + err.toString();
               }
-          }
-          
-          function applyEdits(id) {
-              const content = document.getElementById("edit-content-" + id).value;
-              const imgUrl = document.getElementById("edit-img-" + id).value;
-              document.getElementById("top-banner-container").innerHTML = imgUrl ? '<img src="' + imgUrl + '" alt="Banner" style="width:100%; max-height:220px; object-fit:cover; border-radius:8px; margin-bottom:15px;">' : '';
-              document.getElementById("rendered-seo-body").innerHTML = marked.parse(content);
-              alert("Applied locally! Remember to save this content into your Google Sheet to keep it permanent.");
           }
 
           async function postComment(id, apiUrl) {
@@ -129,9 +106,10 @@
                       headers: { "Content-Type": "text/plain;charset=utf-8" },
                       body: JSON.stringify({ action: "add_comment", mediaId: id, author: author, text: text, emoji: emoji, imageUrl: imageUrl })
                   });
-                  const data = await res.json();
+                  const raw = await res.text();
+                  const data = JSON.parse(raw);
                   if(data.success) { location.reload(); } else { alert("Failed to post comment"); }
-              } catch(e) { alert("Error posting comment"); }
+              } catch(e) { alert("Error posting comment: " + e.toString()); }
           }
 
           async function deleteComment(commentId, apiUrl) {
@@ -143,7 +121,8 @@
                       headers: { "Content-Type": "text/plain;charset=utf-8" },
                       body: JSON.stringify({ action: "delete_comment", password: pwd, commentId: commentId })
                   });
-                  const data = await res.json();
+                  const raw = await res.text();
+                  const data = JSON.parse(raw);
                   if(data.success) { location.reload(); } else { alert(data.error || "Deletion failed"); }
               } catch(e) { alert("Connection error"); }
           }
