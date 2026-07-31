@@ -28,10 +28,12 @@
                     <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using real-time web grounding.</p>
                     <input type="text" id="compare-query-1" placeholder="e.g., Samsung S25 vs iPhone 16" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
                     <button onclick="runComparison('1', 'https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec')" style="width:100%;">Compare & Analyze Upgrades</button>
-                    <div id="comparison-result-1" style="margin-top:15px; font-size:14px; color:#334155; white-space:pre-wrap; line-height: 1.6;"></div>
+                    <div id="comparison-result-1" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
                 </div>
             </article>
         </main>
+        <!-- Include marked.js for visual markdown rendering -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <script>
           async function runComparison(id, apiUrl) {
             const query = document.getElementById("compare-query-" + id).value;
@@ -62,7 +64,8 @@
                           </div>`;
                 });
 
-                resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + text;
+                // Render output visually using marked.js
+                resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + marked.parse(text);
               } else {
                 resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
               }
