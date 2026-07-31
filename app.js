@@ -54,17 +54,6 @@ function render(items) {
         `;
         
         gallery.appendChild(article);
-
-        if (item.schema) {
-            try {
-                const script = document.createElement("script");
-                script.type = "application/ld+json";
-                script.textContent = typeof item.schema === 'object' ? JSON.stringify(item.schema) : item.schema;
-                article.appendChild(script);
-            } catch (e) {
-                console.warn("Schema injection error", e);
-            }
-        }
     });
 }
 
