@@ -73,22 +73,19 @@
                       body: JSON.stringify({ action: "compare", query: query })
                   });
                   const rawText = await response.text();
-                  let data;
+                  let cleanText = rawText;
                   try {
-                      data = JSON.parse(rawText);
-                  } catch(e) {
-                      throw new Error("Server returned invalid response: " + rawText.substring(0, 100));
-                  }
-                  if (data.success) {
-                      let text = data.result;
-                      text = text.replace(/\+(\d+)%/g, (match, p1) => {
-                          const val = Math.min(parseInt(p1), 100);
-                          return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;"></div></div></div>';
-                      });
-                      resultDiv.innerHTML = marked.parse(text);
-                  } else {
-                      resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
-                  }
+                      const parsed = JSON.parse(rawText);
+                      if (parsed.result) cleanText = parsed.result;
+                      else if (parsed.error) throw new Error(parsed.error);
+                  } catch (jsonErr) {}
+
+                  let text = cleanText;
+                  text = text.replace(/\+(\d+)%/g, (match, p1) => {
+                      const val = Math.min(parseInt(p1), 100);
+                      return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;"></div></div></div>';
+                  });
+                  resultDiv.innerHTML = marked.parse(text);
               } catch (err) {
                   resultDiv.innerHTML = "Connection error: " + err.toString();
               }
