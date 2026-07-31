@@ -78,7 +78,7 @@ jobs:
                         
                         <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:20px;">
                             <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
-                            <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using optimized processing.</p>
+                            <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using text/plain CORS bypass.</p>
                             <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S26 vs iPhone 17" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
                             <button onclick="runComparison('${item.id}', '${gasUrl}')" style="width:100%;">Compare & Analyze Upgrades</button>
                             <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
@@ -121,33 +121,42 @@ jobs:
                 
                 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                 <script>
-                    async function runComparison(id, apiUrl) {
-                        const query = document.getElementById("compare-query-" + id).value;
-                        const resultDiv = document.getElementById("comparison-result-" + id);
-                        if (!query) { alert("Please enter products to compare!"); return; }
-                        resultDiv.innerHTML = "⏳ Processing upgrade metrics...";
+                    async function callGASBackend(apiUrl, payload) {
                         try {
                             const response = await fetch(apiUrl, {
                                 method: "POST",
                                 headers: { "Content-Type": "text/plain;charset=utf-8" },
-                                body: JSON.stringify({ action: "compare", query: query })
+                                body: JSON.stringify(payload),
+                                redirect: "follow"
                             });
                             const rawText = await response.text();
-                            let cleanText = rawText;
-                            try {
-                                const parsed = JSON.parse(rawText);
-                                if (parsed.result) cleanText = parsed.result;
-                                else if (parsed.error) throw new Error(parsed.error);
-                            } catch (jsonErr) {}
+                            const trimmed = rawText.trim();
+                            if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+                                return JSON.parse(trimmed);
+                            } else {
+                                throw new Error("Server returned non-JSON response.");
+                            }
+                        } catch (err) {
+                            return { success: false, error: err.message };
+                        }
+                    }
 
-                            let text = cleanText;
+                    async function runComparison(id, apiUrl) {
+                        const query = document.getElementById("compare-query-" + id).value;
+                        const resultDiv = document.getElementById("comparison-result-" + id);
+                        if (!query) { alert("Please enter products to compare!"); return; }
+                        resultDiv.innerHTML = "⏳ Processing upgrade metrics via secure channel...";
+                        
+                        const data = await callGASBackend(apiUrl, { action: "compare", query: query });
+                        if (data.success) {
+                            let text = data.result;
                             text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
                                 const val = Math.min(parseInt(p1), 100);
                                 return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;"></div></div></div>';
                             });
                             resultDiv.innerHTML = marked.parse(text);
-                        } catch (err) {
-                            resultDiv.innerHTML = "Connection error: " + err.toString();
+                        } else {
+                            resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
                         }
                     }
 
@@ -157,31 +166,17 @@ jobs:
                         const emoji = document.getElementById("comment-emoji-" + id).value;
                         const imageUrl = document.getElementById("comment-img-" + id).value;
                         if(!text) { alert("Please write a comment!"); return; }
-                        try {
-                            const res = await fetch(apiUrl, {
-                                method: "POST",
-                                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                                body: JSON.stringify({ action: "add_comment", mediaId: id, author: author, text: text, emoji: emoji, imageUrl: imageUrl })
-                            });
-                            const raw = await res.text();
-                            const data = JSON.parse(raw);
-                            if(data.success) { location.reload(); } else { alert("Failed to post comment"); }
-                        } catch(e) { alert("Error posting comment: " + e.toString()); }
+                        
+                        const data = await callGASBackend(apiUrl, { action: "add_comment", mediaId: id, author: author, text: text, emoji: emoji, imageUrl: imageUrl });
+                        if(data.success) { location.reload(); } else { alert("Failed to post comment: " + (data.error || "Unknown")); }
                     }
 
                     async function deleteComment(commentId, apiUrl) {
                         const pwd = prompt("Enter Admin Password to delete comment:");
                         if(!pwd) return;
-                        try {
-                            const res = await fetch(apiUrl, {
-                                method: "POST",
-                                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                                body: JSON.stringify({ action: "delete_comment", password: pwd, commentId: commentId })
-                            });
-                            const raw = await res.text();
-                            const data = JSON.parse(raw);
-                            if(data.success) { location.reload(); } else { alert(data.error || "Deletion failed"); }
-                        } catch(e) { alert("Connection error"); }
+                        
+                        const data = await callGASBackend(apiUrl, { action: "delete_comment", password: pwd, commentId: commentId });
+                        if(data.success) { location.reload(); } else { alert(data.error || "Deletion failed"); }
                     }
                 </script>
                 <script type="application/ld+json">${JSON.stringify(item.schema || {})}</script>
@@ -201,5 +196,5 @@ jobs:
           git stash pop || true
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update media data and static pages"
+          git commit -m "Auto update media data and static pages with CORS preflight bypass"
           git push origin main
