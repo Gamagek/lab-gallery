@@ -116,7 +116,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git pull origin main --rebase || true
           git add data.json pages/
           git diff --cached --quiet || \
           git commit -m "Auto update media data and static comparison pages"
-          git push
+          git push origin main
