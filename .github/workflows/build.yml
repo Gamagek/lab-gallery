@@ -78,7 +78,7 @@ jobs:
                         
                         <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:20px;">
                             <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
-                            <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using real-time web grounding.</p>
+                            <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using stable processing.</p>
                             <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
                             <button onclick="runComparison('${item.id}', '${gasUrl}')" style="width:100%;">Compare & Analyze Upgrades</button>
                             <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
@@ -125,7 +125,7 @@ jobs:
                         const query = document.getElementById("compare-query-" + id).value;
                         const resultDiv = document.getElementById("comparison-result-" + id);
                         if (!query) { alert("Please enter products to compare!"); return; }
-                        resultDiv.innerHTML = "⏳ Grounding and calculating VIP upgrade metrics...";
+                        resultDiv.innerHTML = "⏳ Processing upgrade metrics...";
                         try {
                             const response = await fetch(apiUrl, {
                                 method: "POST",
