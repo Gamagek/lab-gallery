@@ -27,14 +27,22 @@ jobs:
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
         run: |
-          curl -L "$GAS_URL?action=json" -o data.json
-          jq empty data.json
+          curl -L "$GAS_URL?action=json" -o raw_data.json
+          jq empty raw_data.json
 
       - name: Create Generator Script
         run: |
           cat << 'EOF' > generate.js
           const fs = require("fs");
-          const items = JSON.parse(fs.readFileSync("data.json", "utf8"));
+          let raw = JSON.parse(fs.readFileSync("raw_data.json", "utf8"));
+          
+          // Ensure items is always an array whether wrapped in an object or direct
+          let items = Array.isArray(raw) ? raw : (raw.records || raw.data || []);
+          if (!Array.isArray(items)) {
+              console.error("Error: Fetched data is not an array:", raw);
+              process.exit(1);
+          }
+
           const gasUrl = process.env.GAS_URL;
 
           if (!fs.existsSync("pages")) {
@@ -196,5 +204,5 @@ jobs:
           git stash pop || true
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update media data and static pages with CORS preflight bypass"
+          git commit -m "Auto update media data and static pages with robust array parsing"
           git push origin main
