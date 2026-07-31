@@ -1,208 +1,33 @@
-name: Update Media Data & Generate Pages
+async function runComparison(id, apiUrl) {
+    const query = document.getElementById("compare-query-" + id).value;
+    const resultDiv = document.getElementById("comparison-result-" + id);
+    if (!query) { alert("Please enter products to compare!"); return; }
+    resultDiv.innerHTML = "⏳ Generating AI comparison...";
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "compare", query: query })
+        });
+        const rawText = await response.text();
+        
+        // Clean any potential HTML wrapping or gas redirects
+        let cleanText = rawText;
+        try {
+            const parsed = JSON.parse(rawText);
+            if (parsed.result) cleanText = parsed.result;
+            else if (parsed.error) throw new Error(parsed.error);
+        } catch (jsonErr) {
+            // If it's raw text, use it directly
+        }
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: "0 */6 * * *"
-
-permissions:
-  contents: write
-
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - name: Download JSON Feed
-        env:
-          GAS_URL: ${{ secrets.GAS_URL }}
-        run: |
-          curl -L "$GAS_URL?action=json" -o data.json
-          jq empty data.json
-
-      - name: Create Generator Script
-        run: |
-          cat << 'EOF' > generate.js
-          const fs = require("fs");
-          const items = JSON.parse(fs.readFileSync("data.json", "utf8"));
-          const gasUrl = process.env.GAS_URL;
-
-          if (!fs.existsSync("pages")) {
-            fs.mkdirSync("pages");
-          }
-
-          items.forEach(item => {
-            if (!item.id) return;
-
-            let commentsHtml = "";
-            if (item.comments && Array.isArray(item.comments)) {
-              item.comments.forEach(c => {
-                commentsHtml += `<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px; margin-bottom:8px; font-size:13px;">
-                  <strong>${c.author || "Anonymous"}</strong> <span style="font-size:16px;">${c.emoji || ""}</span>
-                  <p style="margin:5px 0;">${c.text || ""}</p>
-                  ${c.imageUrl ? `<img src="${c.imageUrl}" style="max-width:100%; max-height:120px; border-radius:4px; margin-top:5px; display:block;">` : ""}
-                  <div style="text-align:right; margin-top:5px;">
-                  <button onclick="deleteComment('${c.commentId}', '${gasUrl}')" style="background:#ef4444; color:#fff; border:none; padding:2px 6px; font-size:10px; border-radius:3px; cursor:pointer;">Delete (Admin)</button>
-                  </div>
-                  </div>`;
-              });
-            }
-
-            let html = `<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>${item.seoTitle || item.rawTitle || "AI Media Review"}</title>
-                <meta name="description" content="${item.description || ""}">
-                <meta name="keywords" content="${item.keywords || ""}">
-                <link rel="stylesheet" href="../style.css">
-            </head>
-            <body>
-                <header>
-                    <h1>${item.seoTitle || item.rawTitle || ""}</h1>
-                    <p>Verified specifications & permanent VIP upgrade intelligence</p>
-                </header>
-                <main style="max-width:800px; margin:20px auto; padding:20px;">
-                    <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
-                        
-                        <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:20px;">
-                            <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
-                            <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using optimized processing.</p>
-                            <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S26 vs iPhone 17" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
-                            <button onclick="runComparison('${item.id}', '${gasUrl}')" style="width:100%;">Compare & Analyze Upgrades</button>
-                            <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
-                        </div>
-
-                        <div id="public-seo-content" style="margin-bottom:20px;">
-                            <div id="top-banner-container">${item.customImage ? `<img src="${item.customImage}" alt="Banner" style="width:100%; max-height:220px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ""}</div>
-                            <div id="rendered-seo-body">${item.customContent ? item.customContent : "<p style=\"color:#64748b;\">No custom comparison published yet. Use the comparison tool above.</p>"}</div>
-                        </div>
-
-                        <figure style="margin:20px 0 20px 0;">
-                            ${item.type === "video" ? `<video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="${item.url}"></video>` : `<img src="${item.url}" alt="${item.alt || item.rawTitle}" style="width:100%; aspect-ratio:16/9; object-fit:cover;">`}
-                        </figure>
-                        <p style="color:#555;">${item.description || ""}</p>
-
-                        <div style="margin-top:30px; border-top:1px solid #e2e8f0; padding-top:20px;">
-                            <h4 style="margin-bottom:15px; font-size:16px;">💬 Community Comments & Reactions</h4>
-                            <div id="comments-list-${item.id}">${commentsHtml || "<p style=\"font-size:13px; color:#64748b;\">No comments yet. Be the first to share your thoughts!</p>"}</div>
-                            
-                            <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0; margin-top:15px;">
-                                <h5 style="font-size:13px; margin-bottom:8px;">Leave a Comment</h5>
-                                <input type="text" id="comment-author-${item.id}" placeholder="Your Name" style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #cbd5e1; border-radius:4px; font-size:13px;">
-                                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                                    <select id="comment-emoji-${item.id}" style="padding:8px; border:1px solid #cbd5e1; border-radius:4px;">
-                                        <option value="👍">👍 Thumbs Up</option>
-                                        <option value="❤️">❤️ Heart</option>
-                                        <option value="🔥">🔥 Fire</option>
-                                        <option value="💡">💡 Insightful</option>
-                                        <option value="⭐">⭐ Star</option>
-                                    </select>
-                                    <input type="text" id="comment-img-${item.id}" placeholder="Custom Image URL (Optional)" style="flex-grow:1; padding:8px; border:1px solid #cbd5e1; border-radius:4px; font-size:13px;">
-                                </div>
-                                <textarea id="comment-text-${item.id}" rows="3" placeholder="Write your comment..." style="width:100%; padding:8px; margin-bottom:8px; border:1px solid #cbd5e1; border-radius:4px; font-size:13px;"></textarea>
-                                <button onclick="postComment('${item.id}', '${gasUrl}')" style="background:#2563eb; color:#fff; border:none; padding:8px 14px; border-radius:4px; cursor:pointer; font-size:13px;">Post Comment</button>
-                            </div>
-                        </div>
-
-                    </article>
-                </main>
-                
-                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-                <script>
-                    async function runComparison(id, apiUrl) {
-                        const query = document.getElementById("compare-query-" + id).value;
-                        const resultDiv = document.getElementById("comparison-result-" + id);
-                        if (!query) { alert("Please enter products to compare!"); return; }
-                        resultDiv.innerHTML = "⏳ Processing upgrade metrics...";
-                        try {
-                            const response = await fetch(apiUrl, {
-                                method: "POST",
-                                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                                body: JSON.stringify({ action: "compare", query: query })
-                            });
-                            const rawText = await response.text();
-                            let data;
-                            try {
-                                data = JSON.parse(rawText);
-                            } catch(e) {
-                                throw new Error("Server returned invalid response: " + rawText.substring(0, 100));
-                            }
-                            if (data.success) {
-                                let text = data.result;
-                                text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
-                                    const val = Math.min(parseInt(p1), 100);
-                                    return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;\">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;\"></div></div></div>';
-                                });
-                                resultDiv.innerHTML = marked.parse(text);
-                            } else {
-                                resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
-                            }
-                        } catch (err) {
-                            resultDiv.innerHTML = "Connection error: " + err.toString();
-                        }
-                    }
-
-                    async function postComment(id, apiUrl) {
-                        const author = document.getElementById("comment-author-" + id).value;
-                        const text = document.getElementById("comment-text-" + id).value;
-                        const emoji = document.getElementById("comment-emoji-" + id).value;
-                        const imageUrl = document.getElementById("comment-img-" + id).value;
-                        if(!text) { alert("Please write a comment!"); return; }
-                        try {
-                            const res = await fetch(apiUrl, {
-                                method: "POST",
-                                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                                body: JSON.stringify({ action: "add_comment", mediaId: id, author: author, text: text, emoji: emoji, imageUrl: imageUrl })
-                            });
-                            const raw = await res.text();
-                            const data = JSON.parse(raw);
-                            if(data.success) { location.reload(); } else { alert("Failed to post comment"); }
-                        } catch(e) { alert("Error posting comment: " + e.toString()); }
-                    }
-
-                    async function deleteComment(commentId, apiUrl) {
-                        const pwd = prompt("Enter Admin Password to delete comment:");
-                        if(!pwd) return;
-                        try {
-                            const res = await fetch(apiUrl, {
-                                method: "POST",
-                                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                                body: JSON.stringify({ action: "delete_comment", password: pwd, commentId: commentId })
-                            });
-                            const raw = await res.text();
-                            const data = JSON.parse(raw);
-                            if(data.success) { location.reload(); } else { alert(data.error || "Deletion failed"); }
-                        } catch(e) { alert("Connection error"); }
-                    }
-                </script>
-                <script type="application/ld+json">${JSON.stringify(item.schema || {})}</script>
-            </body>
-            </html>`;
-            fs.writeFileSync(`pages/${item.id}.html`, html);
-          });
-          EOF
-          node generate.js
-
-      - name: Commit and Push Changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git stash || true
-          git pull origin main --rebase || true
-          git stash pop || true
-          git add data.json pages/
-          git diff --cached --quiet || \
-          git commit -m "Auto update media data and static pages"
-          git push origin main
+        let text = cleanText;
+        text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
+            const val = Math.min(parseInt(p1), 100);
+            return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;"></div></div></div>';
+        });
+        resultDiv.innerHTML = marked.parse(text);
+    } catch (err) {
+        resultDiv.innerHTML = "Error: " + err.toString();
+    }
+}
