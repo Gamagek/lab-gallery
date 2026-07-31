@@ -80,3 +80,4 @@ function escapeHTML(text) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
