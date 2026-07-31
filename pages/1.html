@@ -1,79 +1,29 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Lab Review 1</title>
-        <meta name="description" content="">
-        <meta name="keywords" content="">
-        <meta property="og:title" content="Lab Review 1">
-        <meta property="og:description" content="">
-        <meta property="og:type" content="article">
-        <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-        <header>
-            <h1>Lab Review 1</h1>
-            <p>Specification breakdown & multi-product analysis</p>
-        </header>
-        <main style="max-width:800px; margin:20px auto; padding:20px;">
-            <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
-                <figure style="margin:0 0 20px 0;">
-                    <video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4"></video>
-                </figure>
-                <p style="color:#555; margin-bottom:20px;"></p>
-                
-                <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
-                    <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
-                    <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using real-time web grounding.</p>
-                    <input type="text" id="compare-query-1" placeholder="e.g., Samsung S25 vs iPhone 16" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
-                    <button onclick="runComparison('1', 'https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec')" style="width:100%;">Compare & Analyze Upgrades</button>
-                    <div id="comparison-result-1" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
-                </div>
-            </article>
-        </main>
-        <!-- Include marked.js for visual markdown rendering -->
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script>
-          async function runComparison(id, apiUrl) {
-            const query = document.getElementById("compare-query-" + id).value;
-            const resultDiv = document.getElementById("comparison-result-" + id);
-            if (!query) {
-              alert("Please enter products to compare!");
-              return;
-            }
-            resultDiv.innerHTML = "⏳ Grounding and calculating VIP upgrade metrics...";
-            try {
-              const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ action: "compare", query: query })
-              });
-              const data = await response.json();
-              if (data.success) {
-                let text = data.result;
-                
-                // Convert performance percentages into filled green progress bars dynamically
-                text = text.replace(/\+(\d+)%/g, (match, p1) => {
-                  const val = Math.min(parseInt(p1), 100);
-                  return `<div style="margin: 8px 0;">
-                            <span style="font-weight: bold; color: #16a34a;">+${val}% Performance Boost</span>
-                            <div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;">
-                              <div style="background: #22c55e; height: 100%; width: ${val}%;"></div>
-                            </div>
-                          </div>`;
-                });
-
-                // Render output visually using marked.js
-                resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + marked.parse(text);
-              } else {
-                resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
-              }
-            } catch (err) {
-              resultDiv.innerHTML = "Connection error: " + err.toString();
-            }
-          }
-        </script>
-        <script type="application/ld+json">{}</script>
-    </body>
-    </html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Media Review</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header>
+        <h1></h1>
+        <p>Verified specifications & permanent VIP upgrade intelligence</p>
+    </header>
+    <main style="max-width:800px; margin:20px auto; padding:20px;">
+        <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
+            <div id="public-seo-content" style="margin-bottom:20px;">
+                <div id="rendered-seo-body"><p style="color:#64748b;">No custom comparison published yet.</p></div>
+            </div>
+            <figure style="margin:20px 0 20px 0;">
+                <video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4"></video>
+            </figure>
+            <p style="color:#555;"></p>
+        </article>
+    </main>
+    <script type="application/ld+json">{}</script>
+</body>
+</html>
