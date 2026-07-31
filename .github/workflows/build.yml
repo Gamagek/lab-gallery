@@ -30,7 +30,7 @@ jobs:
           curl -L "$GAS_URL?action=json" -o data.json
           jq empty data.json
 
-      - name: Generate Static SEO Pages with Secure Admin Hub
+      - name: Generate Static SEO Pages
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
         run: |
@@ -45,148 +45,37 @@ jobs:
 
             items.forEach(item => {
               if (!item.id) return;
-              const html = `<!DOCTYPE html>
-              <html lang="en">
-              <head>
-                  <meta charset="UTF-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>${item.seoTitle || item.rawTitle || "AI Media Review"}</title>
-                  <meta name="description" content="${item.description || ""}">
-                  <meta name="keywords" content="${item.keywords || ""}">
-                  <meta property="og:title" content="${item.seoTitle || item.rawTitle || ""}">
-                  <meta property="og:description" content="${item.description || ""}">
-                  <link rel="stylesheet" href="../style.css">
-              </head>
-              <body>
-                  <header>
-                      <h1>${item.seoTitle || item.rawTitle || ""}</h1>
-                      <p>Verified specifications & permanent VIP upgrade intelligence</p>
-                  </header>
-                  <main style="max-width:800px; margin:20px auto; padding:20px;">
-                      <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
-                          
-                          <!-- Admin Login Trigger -->
-                          <div id="admin-auth-bar" style="text-align:right; margin-bottom:10px;">
-                              <button onclick="toggleAdminLogin()" style="background:#475569; font-size:12px; padding:6px 12px;">🔐 Admin Login</button>
-                          </div>
-                          
-                          <div id="admin-login-modal" style="display:none; background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #cbd5e1;">
-                              <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">Enter Admin Password to Manage Comparisons:</p>
-                              <input type="password" id="admin-pass-input" placeholder="Admin Password" style="padding:8px; width:70%; border:1px solid #cbd5e1; border-radius:4px;">
-                              <button onclick="verifyAdmin(\x27${gasUrl}\x27)" style="padding:8px 14px; background:#2563eb;">Login</button>
-                          </div>
-
-                          <!-- Permanent Public SEO Container (Scraped easily by Google & AI bots) -->
-                          <div id="public-seo-content" style="margin-bottom:20px;">
-                              ${item.customImage ? `<img src="${item.customImage}" alt="VIP Upgrade Banner" style="width:100%; max-height:250px; object-fit:cover; border-radius:8px; margin-bottom:15px;">` : ""}
-                              <div id="rendered-seo-body">${item.customContent ? "" : "<p style='color:#64748b;'>No custom comparison published yet. Admin can log in to generate and publish analysis.</p>"}</div>
-                          </div>
-
-                          <!-- Hidden Admin Editing Suite -->
-                          <div id="admin-edit-suite" style="display:none; background:#f8fafc; padding:20px; border-radius:10px; border:2px dashed #2563eb; margin-top:20px;">
-                              <h3 style="font-size:16px; margin-bottom:10px; color:#1e293b;">🛠️ Admin Content & Image Editor</h3>
-                              <input type="text" id="compare-query-${item.id}" placeholder="Enter products to compare (e.g. S26 vs iPhone 17)" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; background:#fff;">
-                              <button onclick="runComparison(\x27${item.id}\x27, \x27${gasUrl}\x27)" style="width:100%; margin-bottom:15px; background:#0284c7;">⚡ Generate AI Comparison</button>
-                              
-                              <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:5px;">Top Header Image URL (Max size controlled):</label>
-                              <input type="text" id="custom-img-url" value="${item.customImage || ""}" placeholder="https://example.com/image.jpg" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px;">
-                              
-                              <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:5px;">Editable HTML / Markdown Content:</label>
-                              <textarea id="editable-content" rows="10" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace; font-size:13px; background:#fff;">${item.customContent || ""}</textarea>
-                              
-                              <button onclick="saveContentLocally()" style="width:100%; margin-top:10px; background:#16a34a; font-weight:bold;">💾 Copy & Publish Code</button>
-                              <p id="publish-status" style="font-size:12px; color:#16a34a; margin-top:5px; text-align:center;"></p>
-                          </div>
-
-                          <figure style="margin:20px 0 20px 0;">
-                              ${item.type === "video" ? `<video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="${item.url}"></video>` : `<img src="${item.url}" alt="${item.alt || item.rawTitle}" style="width:100%; aspect-ratio:16/9; object-fit:cover;">`}
-                          </figure>
-                          <p style="color:#555;">${item.description || ""}</p>
-                      </article>
-                  </main>
-                  
-                  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-                  <script>
-                    let adminToken = "";
-                    const rawInitialContent = \`${escapeBackticks(item.customContent || "")}\`;
-                    if (rawInitialContent) {
-                      document.getElementById("rendered-seo-body").innerHTML = formatContent(rawInitialContent);
-                    }
-
-                    function toggleAdminLogin() {
-                      const modal = document.getElementById("admin-login-modal");
-                      modal.style.display = modal.style.display === "none" ? "block" : "none";
-                    }
-
-                    async function verifyAdmin(apiUrl) {
-                      const pass = document.getElementById("admin-pass-input").value;
-                      try {
-                        const res = await fetch(apiUrl, {
-                          method: "POST",
-                          headers: { "Content-Type": "text/plain;charset=utf-8" },
-                          body: JSON.stringify({ action: "login", password: pass })
-                        });
-                        const data = await res.json();
-                        if (data.success) {
-                          adminToken = pass;
-                          document.getElementById("admin-login-modal").style.display = "none";
-                          document.getElementById("admin-auth-bar").style.display = "none";
-                          document.getElementById("admin-edit-suite").style.display = "block";
-                          alert("Admin Verified Successfully!");
-                        } else {
-                          alert("Invalid Password!");
-                        }
-                      } catch(e) {
-                        alert("Connection Error");
-                      }
-                    }
-
-                    async function runComparison(id, apiUrl) {
-                      const query = document.getElementById("compare-query-" + id).value;
-                      if (!query) { alert("Enter query!"); return; }
-                      document.getElementById("editable-content").value = "⏳ Generating AI intelligence...";
-                      try {
-                        const res = await fetch(apiUrl, {
-                          method: "POST",
-                          headers: { "Content-Type": "text/plain;charset=utf-8" },
-                          body: JSON.stringify({ action: "compare", password: adminToken, query: query })
-                        });
-                        const data = await res.json();
-                        if (data.success) {
-                          document.getElementById("editable-content").value = data.result;
-                        } else {
-                          alert(data.error || "Generation failed");
-                        }
-                      } catch (err) {
-                        alert("Error: " + err);
-                      }
-                    }
-
-                    function formatContent(text) {
-                      // Convert performance percentages into progress bars dynamically
-                      let formatted = text.replace(/\\+(\\d+)%/g, (match, p1) => {
-                        const val = Math.min(parseInt(p1), 100);
-                        return \`<div style="margin: 8px 0;">
-                                  <span style="font-weight: bold; color: #16a34a;">+\${val}% Performance Boost</span>
-                                  <div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;">
-                                    <div style="background: #22c55e; height: 100%; width: \${val}%;"></div>
-                                  </div>
-                                </div>\`;
-                      });
-                      return marked.parse(formatted);
-                    }
-
-                    function saveContentLocally() {
-                      const content = document.getElementById("editable-content").value;
-                      const imgUrl = document.getElementById("custom-img-url").value;
-                      document.getElementById("rendered-seo-body").innerHTML = formatContent(content);
-                      document.getElementById("publish-status").innerText = "✅ Updated live on page! Update row in Google Sheet to make change permanent across builds.";
-                    }
-                  <\/script>
-                  <script type="application/ld+json">${JSON.stringify(item.schema || {})}<\/script>
-              </body>
-              </html>`;
-              fs.writeFileSync(`pages/${item.id}.html`, html);
+              const html = "<!DOCTYPE html>\n" +
+              "<html lang=\"en\">\n" +
+              "<head>\n" +
+              "    <meta charset=\"UTF-8\">\n" +
+              "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+              "    <title>" + (item.seoTitle || item.rawTitle || "AI Media Review") + "</title>\n" +
+              "    <meta name=\"description\" content=\"" + (item.description || "") + "\">\n" +
+              "    <meta name=\"keywords\" content=\"" + (item.keywords || "") + "\">\n" +
+              "    <link rel=\"stylesheet\" href=\"../style.css\">\n" +
+              "</head>\n" +
+              "<body>\n" +
+              "    <header>\n" +
+              "        <h1>" + (item.seoTitle || item.rawTitle || "") + "</h1>\n" +
+              "        <p>Verified specifications & permanent VIP upgrade intelligence</p>\n" +
+              "    </header>\n" +
+              "    <main style=\"max-width:800px; margin:20px auto; padding:20px;\">\n" +
+              "        <article style=\"background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;\">\n" +
+              "            <div id=\"public-seo-content\" style=\"margin-bottom:20px;\">\n" +
+              (item.customImage ? "                <img src=\"" + item.customImage + "\" alt=\"VIP Banner\" style=\"width:100%; max-height:250px; object-fit:cover; border-radius:8px; margin-bottom:15px;\">\n" : "") +
+              "                <div id=\"rendered-seo-body\">" + (item.customContent ? item.customContent : "<p style=\"color:#64748b;\">No custom comparison published yet.</p>") + "</div>\n" +
+              "            </div>\n" +
+              "            <figure style=\"margin:20px 0 20px 0;\">\n" +
+              (item.type === "video" ? "                <video controls style=\"width:100%; aspect-ratio:16/9; object-fit:cover;\"><source src=\"" + item.url + "\"></video>\n" : "                <img src=\"" + item.url + "\" alt=\"" + (item.alt || item.rawTitle) + "\" style=\"width:100%; aspect-ratio:16/9; object-fit:cover;\">\n") +
+              "            </figure>\n" +
+              "            <p style=\"color:#555;\">" + (item.description || "") + "</p>\n" +
+              "        </article>\n" +
+              "    </main>\n" +
+              "    <script type=\"application/ld+json\">" + JSON.stringify(item.schema || {}) + "</script>\n" +
+              "</body>\n" +
+              "</html>";
+              fs.writeFileSync("pages/" + item.id + ".html", html);
             });
           '
 
@@ -197,5 +86,5 @@ jobs:
           git pull origin main --rebase || true
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update media data and static comparison pages"
+          git commit -m "Auto update static pages securely"
           git push origin main
