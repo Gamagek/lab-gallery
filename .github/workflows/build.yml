@@ -34,11 +34,14 @@ jobs:
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
         run: |
-          mkdir -p pages
           node -e '
             const fs = require("fs");
             const items = JSON.parse(fs.readFileSync("data.json", "utf8"));
             const gasUrl = process.env.GAS_URL;
+
+            if (!fs.existsSync("pages")) {
+              fs.mkdirSync("pages");
+            }
 
             items.forEach(item => {
               if (!item.id) return;
@@ -67,12 +70,11 @@ jobs:
                           </figure>
                           <p style="color:#555; margin-bottom:20px;">${item.description || ""}</p>
                           
-                          <!-- Cascading Product Comparison Panel -->
                           <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
                               <h3 style="margin-bottom:10px; font-size:18px;">⚡ Multi-Product Comparison Hub</h3>
                               <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, pricing, pros & cons using real-time web grounding.</p>
-                              <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16 vs Xiaomi" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px;">
-                              <button onclick="runComparison('${item.id}', '${gasUrl}')" style="width:100%;">Compare Products</button>
+                              <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16 vs Xiaomi" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
+                              <button onclick="runComparison(\x27${item.id}\x27, \x27${gasUrl}\x27)" style="width:100%;">Compare Products</button>
                               <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; white-space:pre-wrap;"></div>
                           </div>
                       </article>
