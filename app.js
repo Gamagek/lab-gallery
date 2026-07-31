@@ -2,7 +2,6 @@
 
 let media = [];
 
-// Load JSON data with cache control
 fetch("data.json", { cache: "no-store" })
     .then(res => res.json())
     .then(data => {
@@ -17,7 +16,6 @@ fetch("data.json", { cache: "no-store" })
         }
     });
 
-// Render Gallery Cards
 function render(items) {
     const gallery = document.getElementById("gallery");
     if (!gallery) return;
@@ -37,20 +35,11 @@ function render(items) {
         const pageLink = item.id ? `pages/${item.id}.html` : "#";
 
         if (type === "video") {
-            mediaHTML = `
-                <video controls preload="none">
-                    <source src="${url}">
-                    Your browser does not support the video tag.
-                </video>`;
+            mediaHTML = `<video controls preload="none"><source src="${url}"></video>`;
         } else if (type === "audio") {
-            mediaHTML = `
-                <audio controls preload="none">
-                    <source src="${url}">
-                    Your browser does not support the audio tag.
-                </audio>`;
+            mediaHTML = `<audio controls preload="none"><source src="${url}"></audio>`;
         } else {
-            mediaHTML = `
-                <img src="${url}" alt="${escapeHTML(alt)}" loading="lazy">`;
+            mediaHTML = `<img src="${url}" alt="${escapeHTML(alt)}" loading="lazy">`;
         }
         
         article.innerHTML = `
@@ -66,7 +55,6 @@ function render(items) {
         
         gallery.appendChild(article);
 
-        // Inject JSON-LD Schema
         if (item.schema) {
             try {
                 const script = document.createElement("script");
@@ -80,7 +68,6 @@ function render(items) {
     });
 }
 
-// Client-side Search / Filter
 const searchInput = document.getElementById("search");
 if (searchInput) {
     searchInput.addEventListener("input", e => {
@@ -95,7 +82,6 @@ if (searchInput) {
     });
 }
 
-// HTML Escaping Utility
 function escapeHTML(text) {
     if (text == null) return "";
     return String(text)
