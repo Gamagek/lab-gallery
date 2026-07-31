@@ -225,5 +225,5 @@ jobs:
           git stash pop || true
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update media data and static pages"
+          git commit -m "Auto update media data and static pages with Bright Data fallback integration"
           git push origin main
