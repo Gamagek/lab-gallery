@@ -146,12 +146,18 @@ jobs:
                                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                                 body: JSON.stringify({ action: "compare", query: query })
                             });
-                            const data = await response.json();
+                            const rawText = await response.text();
+                            let data;
+                            try {
+                                data = JSON.parse(rawText);
+                            } catch(e) {
+                                throw new Error("Server returned invalid response: " + rawText.substring(0, 100));
+                            }
                             if (data.success) {
                                 let text = data.result;
                                 text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
                                     const val = Math.min(parseInt(p1), 100);
-                                    return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;"></div></div></div>';
+                                    return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;\">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;\"></div></div></div>';
                                 });
                                 resultDiv.innerHTML = marked.parse(text);
                                 document.getElementById("edit-content-" + id).value = text;
@@ -214,8 +220,10 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git stash || true
           git pull origin main --rebase || true
+          git stash pop || true
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Build static pages via external generator script"
+          git commit -m "Fix git sync conflicts and update pages"
           git push origin main
