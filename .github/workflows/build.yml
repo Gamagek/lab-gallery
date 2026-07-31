@@ -71,11 +71,11 @@ jobs:
                           <p style="color:#555; margin-bottom:20px;">${item.description || ""}</p>
                           
                           <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
-                              <h3 style="margin-bottom:10px; font-size:18px;">⚡ Multi-Product Comparison Hub</h3>
-                              <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, pricing, pros & cons using real-time web grounding.</p>
-                              <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16 vs Xiaomi" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
-                              <button onclick="runComparison(\x27${item.id}\x27, \x27${gasUrl}\x27)" style="width:100%;">Compare Products</button>
-                              <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; white-space:pre-wrap;"></div>
+                              <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
+                              <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using real-time web grounding.</p>
+                              <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
+                              <button onclick="runComparison(\x27${item.id}\x27, \x27${gasUrl}\x27)" style="width:100%;">Compare & Analyze Upgrades</button>
+                              <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; white-space:pre-wrap; line-height: 1.6;"></div>
                           </div>
                       </article>
                   </main>
@@ -87,7 +87,7 @@ jobs:
                         alert("Please enter products to compare!");
                         return;
                       }
-                      resultDiv.innerHTML = "⏳ Grounding and analyzing data...";
+                      resultDiv.innerHTML = "⏳ Grounding and calculating VIP upgrade metrics...";
                       try {
                         const response = await fetch(apiUrl, {
                           method: "POST",
@@ -96,7 +96,20 @@ jobs:
                         });
                         const data = await response.json();
                         if (data.success) {
-                          resultDiv.innerHTML = "<strong>Analysis Results:</strong><br>" + data.result;
+                          let text = data.result;
+                          
+                          // Convert performance percentages into filled green progress bars dynamically
+                          text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
+                            const val = Math.min(parseInt(p1), 100);
+                            return \`<div style="margin: 8px 0;">
+                                      <span style="font-weight: bold; color: #16a34a;">+\${val}% Performance Boost</span>
+                                      <div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;">
+                                        <div style="background: #22c55e; height: 100%; width: \${val}%;"></div>
+                                      </div>
+                                    </div>\`;
+                          });
+
+                          resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + text;
                         } else {
                           resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
                         }
