@@ -138,13 +138,10 @@ jobs:
                             });
                             const rawText = await response.text();
                             const trimmed = rawText.trim();
-                            if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
-                                try {
-                                    return JSON.parse(trimmed);
-                                } catch (e) {
-                                    return { success: true, result: rawText };
-                                }
-                            } else {
+                            try {
+                                const json = JSON.parse(trimmed);
+                                return json;
+                            } catch (e) {
                                 return { success: true, result: rawText };
                             }
                         } catch (err) {
@@ -159,15 +156,15 @@ jobs:
                         resultDiv.innerHTML = "⏳ Processing upgrade metrics via secure channel...";
                         
                         const data = await callGASBackend(apiUrl, { action: "compare", query: query });
-                        if (data.success) {
-                            let text = data.result;
+                        if (data && data.success) {
+                            let text = data.result || JSON.stringify(data);
                             text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
                                 const val = Math.min(parseInt(p1), 100);
                                 return '<div style="margin: 8px 0;"><span style="font-weight: bold; color: #16a34a;">+' + val + '% Performance Boost</span><div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;"><div style="background: #22c55e; height: 100%; width: ' + val + '%;"></div></div></div>';
                             });
                             resultDiv.innerHTML = marked.parse(text);
                         } else {
-                            resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
+                            resultDiv.innerHTML = "Error: " + (data && data.error ? data.error : "Failed to fetch comparison.");
                         }
                     }
 
@@ -179,7 +176,7 @@ jobs:
                         if(!text) { alert("Please write a comment!"); return; }
                         
                         const data = await callGASBackend(apiUrl, { action: "add_comment", mediaId: id, author: author, text: text, emoji: emoji, imageUrl: imageUrl });
-                        if(data.success) { location.reload(); } else { alert("Failed to post comment: " + (data.error || "Unknown")); }
+                        if(data && data.success) { location.reload(); } else { alert("Failed to post comment: " + (data ? data.error : "Unknown")); }
                     }
 
                     async function deleteComment(commentId, apiUrl) {
@@ -187,7 +184,7 @@ jobs:
                         if(!pwd) return;
                         
                         const data = await callGASBackend(apiUrl, { action: "delete_comment", password: pwd, commentId: commentId });
-                        if(data.success) { location.reload(); } else { alert(data.error || "Deletion failed"); }
+                        if(data && data.success) { location.reload(); } else { alert(data ? data.error : "Deletion failed"); }
                     }
                 </script>
                 <script type="application/ld+json">${JSON.stringify(item.schema || {})}</script>
@@ -207,5 +204,5 @@ jobs:
           git stash pop || true
           git add data.json pages/
           git diff --cached --quiet || \
-          git commit -m "Auto update media data and static pages with robust array parsing"
+          git commit -m "Auto update media pages with correct JSON comparison handler"
           git push origin main
