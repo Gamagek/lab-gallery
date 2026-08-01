@@ -69,17 +69,17 @@ function renderCards(items) {
 
         article.innerHTML = `
             ${mediaElement}
-            <div class="media-info" style="padding: 20px; display: flex; flex-direction: column; flex: 1;">
-                <h2 class="media-title" itemprop="headline" style="font-size: 1.25rem; margin-bottom: 10px; font-weight: 700;">${title}</h2>
-                <p class="media-desc" itemprop="description" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6;">${desc}</p>
-                <div class="comparison-box" style="background: rgba(13, 110, 253, 0.08); border-left: 4px solid var(--accent); padding: 12px 14px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">
+            <div class="media-info">
+                <h2 class="media-title" itemprop="headline">${title}</h2>
+                <p class="media-desc" itemprop="description">${desc}</p>
+                <div class="comparison-box">
                     📊 <strong>Web-Grounded Comparison:</strong> ${comparisonText.substring(0, 140)}...
                 </div>
-                <div class="vip-banner" style="background: rgba(227, 116, 0, 0.1); border-left: 4px solid var(--vip-color); padding: 12px 14px; border-radius: 6px; font-size: 0.9rem; color: var(--vip-color); margin-bottom: 16px; font-weight: 500; line-height: 1.5;">
+                <div class="vip-banner">
                     🚀 <strong>VIP Upgrade Tip:</strong> ${vipText.substring(0, 100)}...
                 </div>
                 <div class="media-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom: 16px;">
-                    ${keywords.map(tag => `<span class="tag" style="background:rgba(13,110,253,0.1); color:var(--accent); font-size:0.75rem; padding:4px 10px; border-radius:4px; font-weight: 500;">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
+                    ${keywords.map(tag => `<span class="tag">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
                 </div>
                 <button onclick="openFullView(${index})" style="margin-top: auto; background: var(--accent); color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">🔍 View Full Cloudflare Review & Schema</button>
             </div>
