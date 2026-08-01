@@ -7,8 +7,8 @@ async function loadData() {
         galleryGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">
                 <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
-                <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Crawlable Ultimate SEO Intelligence...</h3>
-                <p style="margin: 0; color: var(--text-muted);">Retrieving multi-product comparison specs, rich descriptions, and JSON-LD schema.</p>
+                <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Crawlable 2+ Product Comparison Intelligence...</h3>
+                <p style="margin: 0; color: var(--text-muted);">Retrieving multi-device comparison specs, rich descriptions, and JSON-LD schema.</p>
             </div>
         `;
     }
@@ -27,7 +27,6 @@ async function loadData() {
 
         renderCards(globalData);
         setupControls();
-        setupModalContainer();
     } catch (err) {
         console.error('Fetch error:', err);
         if (galleryGrid) galleryGrid.innerHTML = '<p style="text-align:center; color:red; grid-column:1/-1;">Error loading data.json feed.</p>';
@@ -42,18 +41,18 @@ function renderCards(items) {
     galleryGrid.innerHTML = '';
     schemaContainer.innerHTML = '';
     
-    items.forEach((item, index) => {
+    items.forEach((item) => {
         const seo = item.seo || item;
-        const title = seo.title || item.rawTitle || "Ultimate Product Comparison Review";
-        const desc = seo.description || "Detailed long-form SEO specification analysis, multi-product comparison, and VIP upgrade insights.";
+        const title = seo.title || item.rawTitle || "2+ Product Comparison Review";
+        const desc = seo.description || "Detailed long-form SEO specification analysis comparing two or more flagship models with VIP upgrade insights.";
         const videoUrl = seo.videoUrl || (item.type === 'video' ? item.url : "");
         const imageUrl = seo.imageUrl || (item.type === 'image' ? item.url : "");
         const alt = seo.altText || title;
         const keywordsRaw = seo.keywords || [];
         const keywords = typeof keywordsRaw === 'string' ? keywordsRaw.split(",") : keywordsRaw;
 
-        const comparisonText = seo.comparison || "Comprehensive benchmark audit comparing multi-device optical sensors, chipsets, and thermal efficiency.";
-        const vipText = seo.vipTip || "Insider VIP Upgrade Trick: Avoid launch MSRP, leverage trade-in credits, or buy certified open-box inventory.";
+        const comparisonText = seo.comparison || "Comprehensive benchmark audit comparing two or more devices across optical sensors, chipsets, and performance thresholds.";
+        const vipText = seo.vipTip || "Insider VIP Upgrade Trick: Avoid launch MSRP, leverage seasonal trade-in credits, or buy certified open-box inventory.";
 
         const article = document.createElement('article');
         article.className = 'media-card';
@@ -69,19 +68,18 @@ function renderCards(items) {
 
         article.innerHTML = `
             ${mediaElement}
-            <div class="media-info">
-                <h2 class="media-title" itemprop="headline">${title}</h2>
-                <p class="media-desc" itemprop="description">${desc}</p>
-                <div class="comparison-box">
-                    📊 <strong>Web-Grounded Comparison:</strong> ${comparisonText.substring(0, 140)}...
+            <div class="media-info" style="padding: 20px;">
+                <h2 class="media-title" itemprop="headline" style="font-size: 1.25rem; margin-bottom: 10px; font-weight: 700;">${title}</h2>
+                <p class="media-desc" itemprop="description" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6;">${desc}</p>
+                <div class="comparison-box" style="background: rgba(13, 110, 253, 0.08); border-left: 4px solid var(--accent); padding: 12px 14px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">
+                    📊 <strong>2+ Product Web-Grounded Comparison:</strong> ${comparisonText}
                 </div>
-                <div class="vip-banner">
-                    🚀 <strong>VIP Upgrade Tip:</strong> ${vipText.substring(0, 100)}...
+                <div class="vip-banner" style="background: rgba(227, 116, 0, 0.1); border-left: 4px solid var(--vip-color); padding: 12px 14px; border-radius: 6px; font-size: 0.9rem; color: var(--vip-color); margin-bottom: 16px; font-weight: 500; line-height: 1.5;">
+                    🚀 <strong>VIP Upgrade Guidance & Pricing Tricks:</strong> ${vipText}
                 </div>
-                <div class="media-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom: 16px;">
-                    ${keywords.map(tag => `<span class="tag">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
+                <div class="media-tags" style="display:flex; flex-wrap:wrap; gap:6px;">
+                    ${keywords.map(tag => `<span class="tag" style="background:rgba(13,110,253,0.1); color:var(--accent); font-size:0.75rem; padding:4px 10px; border-radius:4px; font-weight: 500;">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
                 </div>
-                <button onclick="openFullView(${index})" style="margin-top: auto; background: var(--accent); color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">🔍 View Full Cloudflare Review & Schema</button>
             </div>
         `;
         galleryGrid.appendChild(article);
@@ -98,59 +96,6 @@ function renderCards(items) {
             }
         }
     });
-}
-
-function setupModalContainer() {
-    if (document.getElementById('media-modal')) return;
-    const modal = document.createElement('div');
-    modal.id = 'media-modal';
-    modal.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; overflow-y:auto; padding:40px 20px; box-sizing:border-box;";
-    modal.innerHTML = `
-        <div style="max-width:800px; margin:0 auto; background:var(--card-bg); border-radius:12px; padding:30px; position:relative; border:1px solid var(--border-color); color:var(--text-main);">
-            <button onclick="closeFullView()" style="position:absolute; top:20px; right:20px; background:#ef4444; color:#fff; border:none; padding:8px 14px; border-radius:6px; font-weight:bold; cursor:pointer;">✕ Close Full View</button>
-            <div id="modal-content"></div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-function openFullView(index) {
-    const item = globalData[index];
-    if (!item) return;
-    const seo = item.seo || item;
-    const title = seo.title || item.rawTitle || "Review";
-    const videoUrl = seo.videoUrl || (item.type === 'video' ? item.url : "");
-    const imageUrl = seo.imageUrl || (item.type === 'image' ? item.url : "");
-    const comparison = seo.comparison || "";
-    const vipTip = seo.vipTip || "";
-    const schemaJson = JSON.stringify(seo.schema || {}, null, 2);
-
-    let mediaHtml = '';
-    if (videoUrl) {
-        mediaHtml = `<video controls autoplay style="width:100%; max-height:450px; background:#000; border-radius:8px; margin-bottom:20px;"><source src="${videoUrl}" type="video/mp4">Your browser does not support video.</video>`;
-    } else if (imageUrl) {
-        mediaHtml = `<img src="${imageUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:8px; margin-bottom:20px;">`;
-    }
-
-    const modalContent = document.getElementById('modal-content');
-    modalContent.innerHTML = `
-        <h1 style="font-size:1.8rem; margin-bottom:15px; font-weight:800;">${title}</h1>
-        ${mediaHtml}
-        <h3 style="margin-top:20px; color:var(--accent);">📊 Full Web-Grounded Comparison Intelligence</h3>
-        <p style="line-height:1.7; font-size:1.05rem; margin-bottom:20px; white-space:pre-wrap;">${comparison}</p>
-        
-        <h3 style="margin-top:20px; color:var(--vip-color);">🚀 VIP Upgrade Guidance & Pricing Hacks</h3>
-        <p style="line-height:1.7; font-size:1.05rem; margin-bottom:25px; white-space:pre-wrap;">${vipTip}</p>
-
-        <h3 style="margin-top:20px;">🔍 Active JSON-LD TechArticle Schema</h3>
-        <pre style="background:rgba(0,0,0,0.05); padding:15px; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>${schemaJson}</code></pre>
-    `;
-
-    document.getElementById('media-modal').style.display = 'block';
-}
-
-function closeFullView() {
-    document.getElementById('media-modal').style.display = 'none';
 }
 
 function setupControls() {
