@@ -72,9 +72,13 @@
                   const rawText = await response.text();
                   const trimmed = rawText.trim();
                   if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
-                      return JSON.parse(trimmed);
+                      try {
+                          return JSON.parse(trimmed);
+                      } catch (e) {
+                          return { success: true, result: rawText };
+                      }
                   } else {
-                      throw new Error("Server returned non-JSON response.");
+                      return { success: true, result: rawText };
                   }
               } catch (err) {
                   return { success: false, error: err.message };
