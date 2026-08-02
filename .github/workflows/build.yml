@@ -100,12 +100,12 @@ jobs:
                         if (data.success) {
                           let text = data.result;
                           
-                          // Convert performance percentages into filled green progress bars dynamically
+                          // Corrected regex escaping to properly render visual performance progress bars
                           text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
                             const val = Math.min(parseInt(p1), 100);
-                            return \`<div style="margin: 8px 0;">
+                            return \`<div style="margin: 12px 0; padding: 10px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
                                       <span style="font-weight: bold; color: #16a34a;">+\${val}% Performance Boost</span>
-                                      <div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;">
+                                      <div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 6px; overflow: hidden;">
                                         <div style="background: #22c55e; height: 100%; width: \${val}%;"></div>
                                       </div>
                                     </div>\`;
