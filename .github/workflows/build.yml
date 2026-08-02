@@ -100,10 +100,8 @@ jobs:
                         if (data.success) {
                           let text = data.result;
                           
-                          // Strip raw bracket text blocks or artifacts completely
                           text = text.replace(/\\[[\\s\\S]*?\\]/g, "");
 
-                          // Cleanly match and format percentage numbers into graphical progress elements
                           text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
                             const val = Math.min(parseInt(p1), 100);
                             return \`<div style="margin: 12px 0; padding: 12px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
@@ -114,7 +112,6 @@ jobs:
                                     </div>\`;
                           });
 
-                          // Render output visually using marked.js
                           resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + marked.parse(text);
                         } else {
                           resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
@@ -135,7 +132,9 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git stash || true
           git pull origin main --rebase || true
+          git stash pop || true
           git add data.json pages/
           git diff --cached --quiet || \
           git commit -m "Auto update media data and static comparison pages"
