@@ -96,7 +96,16 @@ jobs:
                           headers: { "Content-Type": "text/plain;charset=utf-8" },
                           body: JSON.stringify({ action: "compare", query: query })
                         });
-                        const data = await response.json();
+
+                        const rawText = await response.text();
+                        let data;
+                        try {
+                          data = JSON.parse(rawText);
+                        } catch (parseErr) {
+                          resultDiv.innerHTML = "❌ Server error: The backend returned an HTML page instead of JSON. Please check your Google Apps Script deployment URL.";
+                          return;
+                        }
+
                         if (data.success) {
                           let text = data.result;
                           
