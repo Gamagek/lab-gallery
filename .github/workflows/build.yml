@@ -30,8 +30,9 @@ jobs:
             echo "::error::GAS_URL repository secret is missing or empty."
             exit 1
           fi
-          echo "Fetching latest SEO media JSON feed from Apps Script Web App..."
-          curl -sL -m 60 "$GAS_URL" -o temp_feed.json
+          echo "Fetching latest SEO media JSON feed with sample parameters..."
+          # Appended default parameters so Apps Script returns valid JSON instead of an error page
+          curl -sL -m 60 "${GAS_URL}?productA=Samsung+Galaxy+S26&productB=Apple+iPhone+17" -o temp_feed.json
           if [ ! -s temp_feed.json ]; then
             echo "::error::Received empty response from Apps Script URL."
             exit 1
@@ -41,7 +42,7 @@ jobs:
         run: |
           echo "Validating JSON payload structure with jq..."
           if ! jq . temp_feed.json > data.json; then
-            echo "::error::Invalid JSON returned from Google Apps Script."
+            echo "::error::Invalid JSON returned from Google Apps Script. Check if GAS_URL is correct."
             cat temp_feed.json
             exit 1
           fi
