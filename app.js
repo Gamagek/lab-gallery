@@ -1,196 +1,107 @@
-// app.js
-let globalData = [];
+"use strict";
 
-async function loadData() {
-    const galleryGrid = document.getElementById('gallery');
-    if (galleryGrid) {
-        galleryGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-color);">
-                <div style="font-size: 1.5rem; margin-bottom: 10px;">⏳</div>
-                <h3 style="margin: 0 0 5px 0; color: var(--text-main);">Loading Ultimate Tech Intelligence...</h3>
-                <p style="margin: 0; color: var(--text-muted);">Retrieving multi-product comparison specs, rich descriptions, and JSON-LD schema.</p>
-            </div>
-        `;
-    }
+let media = [];
 
-    try {
-        const response = await fetch('./data.json', { cache: 'no-store' });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const rawJson = await response.json();
-        
-        // Handle case where data.json holds an error object instead of an array
-        if (rawJson && rawJson.error) {
-            throw new Error(rawJson.error);
+// Load JSON data with cache control
+fetch("data.json", { cache: "no-store" })
+    .then(res => res.json())
+    .then(data => {
+        media = data;
+        render(media);
+    })
+    .catch(err => {
+        console.error("Error loading data.json:", err);
+        const gallery = document.getElementById("gallery");
+        if (gallery) {
+            gallery.innerHTML = "<p style='padding: 20px; color: red; text-align: center;'>Error loading media content library.</p>";
         }
+    });
 
-        globalData = Array.isArray(rawJson) ? rawJson : (rawJson.data || []);
-
-        if (!Array.isArray(globalData) || globalData.length === 0) {
-            // Fallback sample item so the UI never appears blank
-            globalData = [{
-                seo: {
-                    title: "Samsung Galaxy S26 vs Apple iPhone 17 Comparison",
-                    description: "Comprehensive specifications, benchmark analysis, and VIP upgrade intelligence.",
-                    comparison: "Core specifications showdown comparing processing speed, display brightness, and camera performance.",
-                    vipTip: "Avoid launch MSRP and leverage trade-in credits or certified open-box inventory.",
-                    keywords: ["Samsung", "iPhone", "Tech Comparison"]
-                }
-            }];
-        }
-
-        renderCards(globalData);
-        setupControls();
-        setupModalContainer();
-    } catch (err) {
-        console.error('Fetch error:', err);
-        // Render safe fallback data if data.json is invalid or missing
-        globalData = [{
-            seo: {
-                title: "Pro Tech Matchup Review",
-                description: "Live comparison insights and optimization strategies.",
-                comparison: "Perform dual-key device analysis using the live matching controls.",
-                vipTip: "Keep your apps updated and use local caching tools to extend battery life.",
-                keywords: ["Tech", "Matchup", "Intelligence"]
-            }
-        }];
-        renderCards(globalData);
-        setupControls();
-        setupModalContainer();
-    }
-}
-
-function renderCards(items) {
-    const galleryGrid = document.getElementById('gallery');
-    const schemaContainer = document.getElementById('seo-schema-container') || document.head;
+// Render Gallery Cards
+function render(items) {
+    const gallery = document.getElementById("gallery");
+    if (!gallery) return;
     
-    if (!galleryGrid) return;
-    galleryGrid.innerHTML = '';
-    schemaContainer.innerHTML = '';
+    gallery.innerHTML = "";
     
-    items.forEach((item, index) => {
-        const seo = item.seo || item;
-        const title = seo.title || item.rawTitle || "Ultimate Product Comparison Review";
-        const desc = seo.description || "Detailed long-form SEO specification analysis, multi-product comparison, and VIP upgrade insights.";
-        const videoUrl = seo.videoUrl || (item.type === 'video' ? item.url : "");
-        const imageUrl = seo.imageUrl || (item.type === 'image' ? item.url : "");
-        const alt = seo.altText || title;
-        const keywordsRaw = seo.keywords || [];
-        const keywords = typeof keywordsRaw === 'string' ? keywordsRaw.split(",") : keywordsRaw;
+    items.forEach(item => {
+        const article = document.createElement("article");
+        let mediaHTML = "";
+        
+        const type = (item.type || "").toLowerCase();
+        const title = item.seoTitle || item.rawTitle || "Media Review";
+        const description = item.description || "";
+        const keywords = item.keywords || "";
+        const alt = item.alt || title;
+        const url = item.url || "";
+        const pageLink = item.id ? `pages/${item.id}.html` : "#";
 
-        const comparisonText = seo.comparison || "Comprehensive benchmark audit comparing multi-device optical sensors, chipsets, and thermal efficiency.";
-        const vipText = seo.vipTip || "Insider VIP Upgrade Trick: Avoid launch MSRP, leverage trade-in credits, or buy certified open-box inventory.";
-
-        const article = document.createElement('article');
-        article.className = 'media-card';
-        article.setAttribute('itemscope', '');
-        article.setAttribute('itemtype', 'https://schema.org/TechArticle');
-
-        let mediaElement = '';
-        if (videoUrl) {
-            mediaElement = `<figure class="media-figure" style="margin:0;"><video controls preload="metadata" style="width:100%; height:240px; background:#000; object-fit:cover;"><source src="${videoUrl}" type="video/mp4">Your browser does not support video.</video></figure>`;
-        } else if (imageUrl) {
-            mediaElement = `<figure class="media-figure" style="margin:0;"><img src="${imageUrl}" alt="${alt}" loading="lazy" style="width:100%; height:240px; object-fit:cover;"></figure>`;
+        if (type === "video") {
+            mediaHTML = `
+                <video controls preload="none">
+                    <source src="${url}">
+                    Your browser does not support the video tag.
+                </video>`;
+        } else if (type === "audio") {
+            mediaHTML = `
+                <audio controls preload="none">
+                    <source src="${url}">
+                    Your browser does not support the audio tag.
+                </audio>`;
+        } else {
+            mediaHTML = `
+                <img src="${url}" alt="${escapeHTML(alt)}" loading="lazy">`;
         }
-
+        
         article.innerHTML = `
-            ${mediaElement}
-            <div class="media-info">
-                <h2 class="media-title" itemprop="headline">${title}</h2>
-                <p class="media-desc" itemprop="description">${desc}</p>
-                <div class="comparison-box">
-                    📊 <strong>Web-Grounded Comparison:</strong> ${comparisonText.substring(0, 140)}...
-                </div>
-                <div class="vip-banner">
-                    🚀 <strong>VIP Upgrade Tip:</strong> ${vipText.substring(0, 100)}...
-                </div>
-                <div class="media-tags" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom: 16px;">
-                    ${keywords.map(tag => `<span class="tag">#${typeof tag === 'string' ? tag.trim() : tag}</span>`).join("")}
-                </div>
-                <button onclick="openFullView(${index})" style="margin-top: auto; background: var(--accent); color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">🔍 View Full Cloudflare Review & Schema</button>
-            </div>
+            <figure>
+                <a href="${pageLink}">${mediaHTML}</a>
+                <figcaption>
+                    <h2><a href="${pageLink}">${escapeHTML(title)}</a></h2>
+                    <p>${escapeHTML(description)}</p>
+                    <small>${escapeHTML(keywords)}</small>
+                </figcaption>
+            </figure>
         `;
-        galleryGrid.appendChild(article);
+        
+        gallery.appendChild(article);
 
-        const schemaObj = seo.schema;
-        if (schemaObj && Object.keys(schemaObj).length > 0) {
+        // Inject JSON-LD Schema
+        if (item.schema) {
             try {
-                const scriptTag = document.createElement('script');
-                scriptTag.type = 'application/ld+json';
-                scriptTag.textContent = JSON.stringify(schemaObj);
-                schemaContainer.appendChild(scriptTag);
+                const script = document.createElement("script");
+                script.type = "application/ld+json";
+                script.textContent = typeof item.schema === 'object' ? JSON.stringify(item.schema) : item.schema;
+                article.appendChild(script);
             } catch (e) {
-                console.warn("Schema insertion warning", e);
+                console.warn("Schema injection error", e);
             }
         }
     });
 }
 
-function setupModalContainer() {
-    if (document.getElementById('media-modal')) return;
-    const modal = document.createElement('div');
-    modal.id = 'media-modal';
-    modal.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; overflow-y:auto; padding:40px 20px; box-sizing:border-box;";
-    modal.innerHTML = `
-        <div style="max-width:800px; margin:0 auto; background:var(--card-bg); border-radius:12px; padding:30px; position:relative; border:1px solid var(--border-color); color:var(--text-main);">
-            <button onclick="closeFullView()" style="position:absolute; top:20px; right:20px; background:#ef4444; color:#fff; border:none; padding:8px 14px; border-radius:6px; font-weight:bold; cursor:pointer;">✕ Close Full View</button>
-            <div id="modal-content"></div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-function openFullView(index) {
-    const item = globalData[index];
-    if (!item) return;
-    const seo = item.seo || item;
-    const title = seo.title || item.rawTitle || "Review";
-    const videoUrl = seo.videoUrl || (item.type === 'video' ? item.url : "");
-    const imageUrl = seo.imageUrl || (item.type === 'image' ? item.url : "");
-    const comparison = seo.comparison || "";
-    const vipTip = seo.vipTip || "";
-    const schemaJson = JSON.stringify(seo.schema || {}, null, 2);
-
-    let mediaHtml = '';
-    if (videoUrl) {
-        mediaHtml = `<video controls autoplay style="width:100%; max-height:450px; background:#000; border-radius:8px; margin-bottom:20px;"><source src="${videoUrl}" type="video/mp4">Your browser does not support video.</video>`;
-    } else if (imageUrl) {
-        mediaHtml = `<img src="${imageUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:8px; margin-bottom:20px;">`;
-    }
-
-    const modalContent = document.getElementById('modal-content');
-    modalContent.innerHTML = `
-        <h1 style="font-size:1.8rem; margin-bottom:15px; font-weight:800;">${title}</h1>
-        ${mediaHtml}
-        <h3 style="margin-top:20px; color:var(--accent);">📊 Full Web-Grounded Comparison Intelligence</h3>
-        <p style="line-height:1.7; font-size:1.05rem; margin-bottom:20px; white-space:pre-wrap;">${comparison}</p>
-        
-        <h3 style="margin-top:20px; color:var(--vip-color);">🚀 VIP Upgrade Guidance & Pricing Hacks</h3>
-        <p style="line-height:1.7; font-size:1.05rem; margin-bottom:25px; white-space:pre-wrap;">${vipTip}</p>
-
-        <h3 style="margin-top:20px;">🔍 Active JSON-LD TechArticle Schema</h3>
-        <pre style="background:rgba(0,0,0,0.05); padding:15px; border-radius:8px; font-size:0.85rem; overflow-x:auto;"><code>${schemaJson}</code></pre>
-    `;
-
-    document.getElementById('media-modal').style.display = 'block';
-}
-
-function closeFullView() {
-    document.getElementById('media-modal').style.display = 'none';
-}
-
-function setupControls() {
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filtered = globalData.filter(item => {
-                const seo = item.seo || item;
-                return (seo.title || "").toLowerCase().includes(query) || (seo.description || "").toLowerCase().includes(query);
-            });
-            renderCards(filtered);
+// Client-side Search / Filter
+const searchInput = document.getElementById("search");
+if (searchInput) {
+    searchInput.addEventListener("input", e => {
+        const q = e.target.value.toLowerCase().trim();
+        const filtered = media.filter(item => {
+            const title = (item.seoTitle || item.rawTitle || "").toLowerCase();
+            const desc = (item.description || "").toLowerCase();
+            const keys = (item.keywords || "").toLowerCase();
+            return title.includes(q) || desc.includes(q) || keys.includes(q);
         });
-    }
+        render(filtered);
+    });
 }
 
-document.addEventListener('DOMContentLoaded', loadData);
+// HTML Escaping Utility
+function escapeHTML(text) {
+    if (text == null) return "";
+    return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
