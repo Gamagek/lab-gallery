@@ -3,311 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Product Comparison & AI Web Grounding Studio</title>
-    <meta name="description" content="Admin studio to compare two or more products, generate live web-grounded specs, JSON-LD schema, rich meta tags, and publish permanently for web crawlers.">
-    
-    <!-- Dynamic SEO Schema & Meta Injector for Crawlers -->
-    <div id="crawler-meta-container"></div>
-    <div id="seo-schema-container"></div>
-
+    <title>Pro Tech Matchup & VIP Upgrade Intelligence</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js for parsing markdown text responses -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
     <style>
-        :root {
-            --bg: #f4f6f9;
-            --card: #ffffff;
-            --text: #212529;
-            --muted: #6c757d;
-            --accent: #0d6efd;
-            --accent-hover: #0b5ed7;
-            --success: #198754;
-            --border: #dee2e6;
-            --vip: #e37400;
-        }
-
-        body.dark-mode {
-            --bg: #121212;
-            --card: #1e1e1e;
-            --text: #e0e0e0;
-            --muted: #a0a0a0;
-            --accent: #3d8bfd;
-            --border: #333333;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 24px;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .container { max-width: 1000px; margin: 0 auto; }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
-        }
-
-        h1 { font-size: 1.5rem; margin: 0; }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 24px;
-        }
-
-        .group { margin-bottom: 16px; }
-        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 0.95rem;
-            box-sizing: border-box;
-        }
-
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .btn-primary { background: var(--accent); color: #fff; width: 100%; }
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-success { background: var(--success); color: #fff; width: 100%; margin-top: 12px; }
-
-        .hidden { display: none; }
-        .loading { text-align: center; color: var(--accent); padding: 20px; font-weight: 500; }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-            gap: 24px;
-            margin-top: 30px;
-        }
-
-        .comparison-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .comparison-card img { width: 100%; height: 220px; object-fit: cover; }
-        .comparison-content { padding: 20px; }
+        .prose table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; }
+        .prose th, .prose td { border: 1px solid #cbd5e1; padding: 0.65rem; text-align: left; }
+        .prose th { background-color: #f1f5f9; font-weight: 600; color: #334155; }
         
-        .box-spec {
-            background: rgba(13, 110, 253, 0.06);
-            border-left: 4px solid var(--accent);
-            padding: 10px 12px;
-            border-radius: 4px;
-            font-size: 0.88rem;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .box-vip {
-            background: rgba(227, 116, 0, 0.08);
-            border-left: 4px solid var(--vip);
-            padding: 10px 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: var(--vip);
-            font-weight: 500;
+        /* Custom Styling for Performance Bars */
+        .perf-bar-container {
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 6px;
             margin-bottom: 12px;
-            line-height: 1.4;
+        }
+        .perf-bar-fill {
+            background-color: #22c55e;
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.6s ease-in-out;
+        }
+        .perf-text-tag {
+            color: #16a34a;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-block;
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
 
-<div class="container">
-    <header>
-        <h1>⚖️ Product Comparison & Web Grounding Studio</h1>
-        <button onclick="document.body.classList.toggle('dark-mode')" style="padding: 6px 12px; font-size: 0.8rem;">🌓 Theme</button>
+    <!-- Header Section -->
+    <header class="bg-indigo-900 text-white shadow-lg py-6 px-4">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <h1 class="text-2xl font-extrabold flex items-center gap-2">
+                    ⚡ Pro Tech Matchup & VIP Intelligence
+                </h1>
+            </div>
+        </div>
     </header>
 
-    <!-- ADMIN STUDIO PANEL FOR MULTI-PRODUCT COMPARISON -->
-    <div class="card" id="admin-panel">
-        <h2 style="margin-top:0; font-size:1.2rem; margin-bottom:16px;">Admin Comparison Generator</h2>
+    <!-- Main Content Grid -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
         
-        <div class="group">
-            <label>Add 2 or More Products to Compare (e.g., Google Pixel 9 Pro vs Samsung Galaxy S24 Ultra vs iPhone 16 Pro Max)</label>
-            <input type="text" id="products-input" value="Google Pixel 9 Pro vs Samsung Galaxy S24 Ultra vs iPhone 16 Pro Max comparison">
+        <!-- Search Controls Box -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Product A</label>
+                    <input type="text" id="productA" placeholder="e.g. Samsung Galaxy S26" 
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-slate-50 text-slate-900 font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Product B (VIP Target)</label>
+                    <input type="text" id="productB" placeholder="e.g. Apple iPhone 17" 
+                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-slate-50 text-slate-900 font-medium">
+                </div>
+            </div>
+            <button onclick="compareProducts()" id="compareBtn" 
+                class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold py-3.5 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-md shadow-indigo-100">
+                <span>🔍 Run Advanced Dual-Key Analysis</span>
+            </button>
         </div>
 
-        <div class="group">
-            <label>Product Display Image URL</label>
-            <input type="text" id="image-input" value="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9">
+        <!-- Loader State Area -->
+        <div id="loader" class="hidden flex-col items-center justify-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent mb-4"></div>
+            <p class="text-slate-600 font-medium animate-pulse">Consulting dual-key neural synthesis & grounding web data...</p>
         </div>
 
-        <button class="btn-primary" onclick="runWebGroundingComparison()">⚡ Run Live Web Grounding Comparison & Generate SEO Suite</button>
+        <!-- Error Notification Box -->
+        <div id="errorBox" class="hidden bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl mb-6 text-sm"></div>
 
-        <div id="loading-box" class="loading hidden">⏳ Executing live Google Search grounding, benchmarking hardware specs & building VIP tips...</div>
+        <!-- Results Side-by-Side Grid -->
+        <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+            <!-- Product A Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <h2 id="titleA" class="font-bold text-slate-800 text-lg truncate">Product A</h2>
+                    <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-md border border-indigo-100">Standard</span>
+                </div>
+                <div id="contentA" class="p-6 prose prose-slate max-w-none text-sm overflow-y-auto max-h-[800px] leading-relaxed"></div>
+            </div>
 
-        <!-- EDITABLE RESULTS SECTION -->
-        <div id="editable-suite" class="hidden" style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 20px;">
-            <h3 style="font-size: 1.1rem; margin-bottom: 12px;">✏️ Edit AI Response, Meta Tags & Schema Before Publishing</h3>
+            <!-- Product B Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <h2 id="titleB" class="font-bold text-slate-800 text-lg truncate">Product B</h2>
+                    <span class="text-xs bg-amber-50 text-amber-700 font-semibold px-2.5 py-1 rounded-md border border-amber-100">👑 VIP Target</span>
+                </div>
+                <div id="contentB" class="p-6 prose prose-slate max-w-none text-sm overflow-y-auto max-h-[800px] leading-relaxed"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 mt-auto">
+        &copy; Product Matchup Engine
+    </footer>
+
+    <!-- Client Script Logic with Enhanced Progress Bar Injector -->
+    <script>
+        const GAS_WEBAPP_URL = "YOUR_NEW_DEPLOYMENT_WEB_APP_URL_HERE";
+
+        async function compareProducts() {
+            const productA = document.getElementById('productA').value.trim();
+            const productB = document.getElementById('productB').value.trim();
             
-            <div class="group"><label>SEO Title (< 60 chars)</label><input type="text" id="edit-title"></div>
-            <div class="group"><label>Meta Description (150-160 chars)</label><textarea id="edit-desc" rows="3"></textarea></div>
-            <div class="group"><label>Keywords</label><input type="text" id="edit-keywords"></div>
-            <div class="group"><label>Live Web-Grounded Comparison Data</label><textarea id="edit-comparison" rows="4"></textarea></div>
-            <div class="group"><label>VIP Upgrade Tricks & Pricing Tips</label><textarea id="edit-viptip" rows="3"></textarea></div>
-            <div class="group"><label>Image Display URL</label><input type="text" id="edit-image"></div>
+            const loader = document.getElementById('loader');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const errorBox = document.getElementById('errorBox');
+            const compareBtn = document.getElementById('compareBtn');
 
-            <button class="btn-success" onclick="saveAndPublishPermanently()">💾 Publish & Save Permanently to Index for Crawlers</button>
-            <p id="status-msg" style="text-align: center; font-weight: 500; margin-top: 10px;"></p>
-        </div>
-    </div>
-
-    <!-- PUBLIC CRAWLABLE COMPARISON GALLERY -->
-    <h2 style="font-size: 1.3rem; margin-top: 40px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Public Crawlable Comparison Feed</h2>
-    <div id="public-gallery" class="gallery-grid">
-        <!-- Injected dynamically for web crawlers and public visitors -->
-    </div>
-</div>
-
-<script>
-    // Mock deployment simulator mimicking Google Apps Script backend and GitHub data sync
-    let savedComparisons = JSON.parse(localStorage.getItem('cached_comparisons') || '[]');
-
-    document.addEventListener('DOMContentLoaded', () => {
-        renderPublicGallery(savedComparisons);
-    });
-
-    function runWebGroundingComparison() {
-        const query = document.getElementById('products-input').value.trim();
-        const img = document.getElementById('image-input').value.trim();
-        if (!query) { alert('Please enter products to compare.'); return; }
-
-        document.getElementById('loading-box').classList.remove('hidden');
-        document.getElementById('editable-suite').classList.add('hidden');
-
-        // Simulate real-time Gemini web grounding synthesis
-        setTimeout(() => {
-            const mockGroundedResponse = {
-                title: `${query.slice(0, 45)} | Ultimate Comparison`,
-                description: `Compare ${query} with expert web-grounded benchmark scores, optical sensor analysis, and insider VIP trade-in pricing tips. Read the ultimate review!`,
-                keywords: `${query}, flagship comparison, tech specs, hardware benchmarks, VIP deals`,
-                altText: `Comparative hardware review of ${query}`,
-                schema: {
-                    "@context": "https://schema.org",
-                    "@type": "TechArticle",
-                    "headline": `Comparative Analysis: ${query}`,
-                    "description": `Detailed hardware specs and pricing intelligence comparing ${query}.`
-                },
-                comparison: `Comprehensive benchmark audit for [ ${query} ]: Evaluated neural processing units, multi-lens optical configurations, and thermal dissipation thresholds. Real-world synthetic tests demonstrate superior low-light rendering and high-refresh efficiency compared to legacy models.`,
-                vipTip: "Insider VIP Upgrade Trick: Avoid launch-window MSRP. Leverage carrier seasonal trade-in credits offering up to $1,000 off or purchase certified open-box inventory after 90 days to capture a 25% immediate cost reduction.",
-                imageUrl: img
-            };
-
-            document.getElementById('edit-title').value = mockGroundedResponse.title;
-            document.getElementById('edit-desc').value = mockGroundedResponse.description;
-            document.getElementById('edit-keywords').value = mockGroundedResponse.keywords;
-            document.getElementById('edit-comparison').value = mockGroundedResponse.comparison;
-            document.getElementById('edit-viptip').value = mockGroundedResponse.vipTip;
-            document.getElementById('edit-image').value = mockGroundedResponse.imageUrl;
-
-            document.getElementById('loading-box').classList.add('hidden');
-            document.getElementById('editable-suite').classList.remove('hidden');
-        }, 1500);
-    }
-
-    function saveAndPublishPermanently() {
-        const newRecord = {
-            title: document.getElementById('edit-title').value,
-            description: document.getElementById('edit-desc').value,
-            keywords: document.getElementById('edit-keywords').value,
-            altText: document.getElementById('edit-title').value,
-            schema: {
-                "@context": "https://schema.org",
-                "@type": "TechArticle",
-                "headline": document.getElementById('edit-title').value,
-                "description": document.getElementById('edit-desc').value
-            },
-            comparison: document.getElementById('edit-comparison').value,
-            vipTip: document.getElementById('edit-viptip').value,
-            imageUrl: document.getElementById('edit-image').value
-        };
-
-        savedComparisons.unshift(newRecord);
-        localStorage.setItem('cached_comparisons', JSON.stringify(savedComparisons));
-
-        const msg = document.getElementById('status-msg');
-        msg.style.color = "var(--success)";
-        msg.textContent = "✓ Successfully published and locked to index! Crawlers can now index this content.";
-
-        renderPublicGallery(savedComparisons);
-    }
-
-    function renderPublicGallery(items) {
-        const gallery = document.getElementById('public-gallery');
-        const schemaContainer = document.getElementById('seo-schema-container');
-        const metaContainer = document.getElementById('crawler-meta-container');
-        
-        gallery.innerHTML = '';
-        schemaContainer.innerHTML = '';
-        metaContainer.innerHTML = '';
-
-        if (items.length === 0) {
-            gallery.innerHTML = '<p style="color:var(--muted); grid-column:1/-1;">No comparison reviews published yet. Use the admin panel above to generate and publish reviews.</p>';
-            return;
-        }
-
-        items.forEach((item, index) => {
-            // Inject meta tags and schema into head for crawlers
-            if (index === 0) {
-                metaContainer.innerHTML = `
-                    <meta name="title" content="${item.title}">
-                    <meta name="description" content="${item.description}">
-                    <meta name="keywords" content="${item.keywords}">
-                `;
+            if (!productA || !productB) {
+                alert("Please fill in both product fields.");
+                return;
             }
 
-            const scriptTag = document.createElement('script');
-            scriptTag.type = 'application/ld+json';
-            scriptTag.textContent = JSON.stringify(item.schema);
-            schemaContainer.appendChild(scriptTag);
+            // Reset UI states
+            errorBox.classList.add('hidden');
+            resultsGrid.classList.add('hidden');
+            loader.classList.remove('hidden');
+            loader.style.display = 'flex';
+            compareBtn.disabled = true;
 
-            const card = document.createElement('article');
-            card.className = 'comparison-card';
-            card.setAttribute('itemscope', '');
-            card.setAttribute('itemtype', 'https://schema.org/TechArticle');
+            try {
+                const requestUrl = `${GAS_WEBAPP_URL}?productA=${encodeURIComponent(productA)}&productB=${encodeURIComponent(productB)}`;
+                
+                const response = await fetch(requestUrl);
+                const json = await response.json();
 
-            card.innerHTML = `
-                <img src="${item.imageUrl}" alt="${item.altText}" loading="lazy">
-                <div class="comparison-content">
-                    <h2 style="font-size:1.15rem; margin-top:0; margin-bottom:8px;" itemprop="headline">${item.title}</h2>
-                    <p style="font-size:0.9rem; color:var(--muted); margin-bottom:14px;" itemprop="description">${item.description}</p>
-                    <div class="box-spec">
-                        📊 <strong>Web-Grounded Comparison:</strong> ${item.comparison}
-                    </div>
-                    <div class="box-vip">
-                        🚀 <strong>VIP Upgrade Guidance:</strong> ${item.vipTip}
-                    </div>
-                </div>
-            `;
-            gallery.appendChild(card);
-        });
-    }
-</script>
+                if (json.error) {
+                    throw new Error(json.error);
+                }
 
+                // Populate Product A
+                document.getElementById('titleA').innerText = productA;
+                document.getElementById('contentA').innerHTML = marked.parse(json.productA || "No data returned.");
+
+                // Populate Product B + Upgrade Intelligence
+                document.getElementById('titleB').innerText = productB;
+                let combinedB = json.productB || "";
+                let parts = combinedB.split("--- subgroups ---");
+                
+                let finalHTML = marked.parse(parts[0] || "");
+                if (parts[1]) {
+                    let upgradeMarkdown = parts[1];
+                    
+                    upgradeMarkdown = upgradeMarkdown.replace(
+                        /(\+?\d+%\s*(?:Performance Boost|Combined Frame-Rate Fluidity & Battery Life Boost|Peak CPU Voltage and Key Power Performance Boost)?)/gi, 
+                        (match, p1) => {
+                            let digits = parseInt(p1.replace(/\D/g, '')) || 25;
+                            let width = Math.min(digits * 2.5, 100);
+                            return `<span class="perf-text-tag">${match}</span><div class="perf-bar-container"><div class="perf-bar-fill" style="width: ${width}%;"></div></div>`;
+                        }
+                    );
+
+                    finalHTML += `<hr class="my-6 border-slate-200"><h3 class="text-base font-bold text-slate-900 mb-3">3. VIP Upgrade Intelligence</h3>` + marked.parse(upgradeMarkdown);
+                }
+                document.getElementById('contentB').innerHTML = finalHTML;
+
+                resultsGrid.classList.remove('hidden');
+            } catch (err) {
+                errorBox.innerText = `Analysis failed: ${err.message}`;
+                errorBox.classList.remove('hidden');
+            } finally {
+                loader.classList.add('hidden');
+                loader.style.display = 'none';
+                compareBtn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
