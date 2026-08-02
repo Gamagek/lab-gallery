@@ -1,58 +1,139 @@
-name: Sync Spreadsheet Data & Build
+name: Update Media Data & Generate Pages
 
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 */6 * * *" # Every 6 hours
+
+permissions:
+  contents: write
 
 jobs:
-  sync-media-feed:
-    name: Fetch and Update Data Feed
+  update:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
 
-      - name: Fetch Live Feed from Google Apps Script
+      - name: Download JSON Feed
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
         run: |
-          if [ -z "$GAS_URL" ]; then
-            echo "::error::GAS_URL repository secret is missing or empty."
-            exit 1
-          fi
-          echo "Fetching latest SEO media JSON feed with sample parameters..."
-          # Appended default parameters so Apps Script returns valid JSON instead of an error page
-          curl -sL -m 60 "${GAS_URL}?productA=Samsung+Galaxy+S26&productB=Apple+iPhone+17" -o temp_feed.json
-          if [ ! -s temp_feed.json ]; then
-            echo "::error::Received empty response from Apps Script URL."
-            exit 1
-          fi
+          curl -L "$GAS_URL?action=json" -o data.json
+          jq empty data.json
 
-      - name: Validate and Format JSON
+      - name: Generate Static SEO Pages with Comparison Panel
+        env:
+          GAS_URL: ${{ secrets.GAS_URL }}
         run: |
-          echo "Validating JSON payload structure with jq..."
-          if ! jq . temp_feed.json > data.json; then
-            echo "::error::Invalid JSON returned from Google Apps Script. Check if GAS_URL is correct."
-            cat temp_feed.json
-            exit 1
-          fi
-          rm -f temp_feed.json
-          echo "Successfully formatted data.json"
+          node -e '
+            const fs = require("fs");
+            const items = JSON.parse(fs.readFileSync("data.json", "utf8"));
+            const gasUrl = process.env.GAS_URL;
 
-      - name: Commit and Push Changes to Main
+            if (!fs.existsSync("pages")) {
+              fs.mkdirSync("pages");
+            }
+
+            items.forEach(item => {
+              if (!item.id) return;
+              const html = `<!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>${item.seoTitle || item.rawTitle || "AI Media Review"}</title>
+                  <meta name="description" content="${item.description || ""}">
+                  <meta name="keywords" content="${item.keywords || ""}">
+                  <meta property="og:title" content="${item.seoTitle || item.rawTitle || ""}">
+                  <meta property="og:description" content="${item.description || ""}">
+                  <meta property="og:type" content="article">
+                  <link rel="stylesheet" href="../style.css">
+              </head>
+              <body>
+                  <header>
+                      <h1>${item.seoTitle || item.rawTitle || ""}</h1>
+                      <p>Specification breakdown & multi-product analysis</p>
+                  </header>
+                  <main style="max-width:800px; margin:20px auto; padding:20px;">
+                      <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
+                          <figure style="margin:0 0 20px 0;">
+                              ${item.type === "video" ? `<video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="${item.url}"></video>` : `<img src="${item.url}" alt="${item.alt || item.rawTitle}" style="width:100%; aspect-ratio:16/9; object-fit:cover;">`}
+                          </figure>
+                          <p style="color:#555; margin-bottom:20px;">${item.description || ""}</p>
+                          
+                          <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
+                              <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
+                              <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using real-time web grounding.</p>
+                              <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
+                              <button onclick="runComparison(\x27${item.id}\x27, \x27${gasUrl}\x27)" style="width:100%;">Compare & Analyze Upgrades</button>
+                              <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
+                          </div>
+                      </article>
+                  </main>
+                  <!-- Include marked.js for visual markdown rendering -->
+                  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+                  <script>
+                    async function runComparison(id, apiUrl) {
+                      const query = document.getElementById("compare-query-" + id).value;
+                      const resultDiv = document.getElementById("comparison-result-" + id);
+                      if (!query) {
+                        alert("Please enter products to compare!");
+                        return;
+                      }
+                      resultDiv.innerHTML = "⏳ Grounding and calculating VIP upgrade metrics...";
+                      try {
+                        const response = await fetch(apiUrl, {
+                          method: "POST",
+                          headers: { "Content-Type": "text/plain;charset=utf-8" },
+                          body: JSON.stringify({ action: "compare", query: query })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                          let text = data.result;
+                          
+                          // Convert performance percentages into filled green progress bars dynamically
+                          text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
+                            const val = Math.min(parseInt(p1), 100);
+                            return \`<div style="margin: 8px 0;">
+                                      <span style="font-weight: bold; color: #16a34a;">+\${val}% Performance Boost</span>
+                                      <div style="background: #e2e8f0; border-radius: 4px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden;">
+                                        <div style="background: #22c55e; height: 100%; width: \${val}%;"></div>
+                                      </div>
+                                    </div>\`;
+                          });
+
+                          // Render output visually using marked.js
+                          resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + marked.parse(text);
+                        } else {
+                          resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
+                        }
+                      } catch (err) {
+                        resultDiv.innerHTML = "Connection error: " + err.toString();
+                      }
+                    }
+                  <\/script>
+                  <script type="application/ld+json">${JSON.stringify(item.schema || {})}<\/script>
+              </body>
+              </html>`;
+              fs.writeFileSync(`pages/${item.id}.html`, html);
+            });
+          '
+
+      - name: Commit and Push Changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout main || git checkout -b main
-          git add data.json
-          git diff --staged --quiet || (git commit -m "chore: sync automated SEO media feed [skip ci]" && git pull origin main --rebase --autostash || true && git push origin main --force)
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git pull origin main --rebase || true
+          git add data.json pages/
+          git diff --cached --quiet || \
+          git commit -m "Auto update media data and static comparison pages"
+          git push origin main
