@@ -1,0 +1,66 @@
+name: Keep Monetag Verification Tag
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/monetag.yml"
+      - "index.html"
+      - "pages/**"
+  workflow_run:
+    workflows:
+      - "Update Media Data & Generate Pages"
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Add Monetag verification tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          inject_tag() {
+            local file="$1"
+            if grep -q 'name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3"' "$file"; then
+              echo "Monetag tag already present: $file"
+              return
+            fi
+
+            sed -i '/<meta charset="UTF-8">/a\    <meta name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3">' "$file"
+            echo "Added Monetag tag: $file"
+          }
+
+          inject_tag index.html
+
+          for file in pages/*.html; do
+            inject_tag "$file"
+          done
+
+      - name: Commit verification tag if needed
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No Monetag changes needed."
+            exit 0
+          fi
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add index.html pages/
+          git commit -m "Keep Monetag verification tag on site pages"
+          git push origin main
