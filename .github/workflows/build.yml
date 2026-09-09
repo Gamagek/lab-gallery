@@ -27,12 +27,24 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Download JSON Feed
+      - name: Download JSON Feed with Safe Fallback
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
         run: |
-          curl -L "$GAS_URL?action=json" -o data.json
-          jq empty data.json
+          set -euo pipefail
+          rm -f data.new.json
+
+          if curl -L --fail --connect-timeout 15 --max-time 90 \
+            "$GAS_URL?action=json" -o data.new.json \
+            && jq empty data.new.json >/dev/null 2>&1; then
+              mv data.new.json data.json
+              echo "Downloaded and validated fresh data.json"
+          else
+              echo "WARNING: Google Apps Script did not return valid JSON."
+              echo "Keeping the last known-good data.json so the site can still build."
+              rm -f data.new.json
+              jq empty data.json
+          fi
 
       - name: Generate Static SEO Pages with Comparison Panel
         env:
