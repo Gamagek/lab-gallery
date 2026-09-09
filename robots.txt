@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://reviews.lowestitem.com/sitemap.xml
