@@ -1,4 +1,4 @@
-name: Keep Monetag Verification and MultiTag
+name: Keep Monetag Verification, MultiTag and Review Links
 
 on:
   workflow_dispatch:
@@ -9,6 +9,8 @@ on:
       - ".github/workflows/monetag.yml"
       - "index.html"
       - "pages/**"
+      - "samsung-galaxy-s26-fe-review/**"
+      - "s26fe-deals-widget.js"
       - "sw.js"
   workflow_run:
     workflows:
@@ -29,7 +31,7 @@ jobs:
         with:
           ref: main
 
-      - name: Keep Monetag verification and MultiTag in HTML
+      - name: Keep Monetag and internal review links in HTML
         shell: bash
         run: |
           python - <<'PY'
@@ -37,11 +39,15 @@ jobs:
 
           verification = '<meta name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3">'
           multitag = '<script src="https://quge5.com/88/tag.min.js" data-zone="278011" async data-cfasync="false"></script>'
+          deal_widget = '<script src="/s26fe-deals-widget.js" defer></script>'
 
           files = [Path('index.html')]
           pages = Path('pages')
           if pages.exists():
               files.extend(sorted(pages.glob('*.html')))
+          s26fe = Path('samsung-galaxy-s26-fe-review/index.html')
+          if s26fe.exists():
+              files.append(s26fe)
 
           for path in files:
               if not path.exists():
@@ -53,17 +59,27 @@ jobs:
               # Keep verification near the top of <head>.
               if verification not in text:
                   marker = '<meta charset="UTF-8">'
+                  marker2 = '<meta charset="utf-8">'
                   if marker in text:
                       text = text.replace(marker, marker + '\n    ' + verification, 1)
+                  elif marker2 in text:
+                      text = text.replace(marker2, marker2 + '\n    ' + verification, 1)
                   else:
                       text = text.replace('<head>', '<head>\n    ' + verification, 1)
 
-              # Keep the MultiTag directly after verification, high in <head>.
+              # Keep MultiTag directly after verification, high in <head>.
               if 'https://quge5.com/88/tag.min.js' not in text:
                   if verification in text:
                       text = text.replace(verification, verification + '\n    ' + multitag, 1)
                   else:
                       text = text.replace('<head>', '<head>\n    ' + multitag, 1)
+
+              # Existing comparison / generated review pages get the S26 FE
+              # internal-link + 10-source deal radar. The dedicated S26 FE page
+              # already contains its own full deal section.
+              if path == Path('index.html') or path == Path('pages/1.html'):
+                  if '/s26fe-deals-widget.js' not in text:
+                      text = text.replace('</body>', '    ' + deal_widget + '\n</body>', 1)
 
               if text != original:
                   path.write_text(text, encoding='utf-8')
@@ -72,16 +88,16 @@ jobs:
                   print(f'Already configured {path}')
           PY
 
-      - name: Commit Monetag changes if needed
+      - name: Commit site integration changes if needed
         shell: bash
         run: |
           if git diff --quiet; then
-            echo "No Monetag HTML changes needed."
+            echo "No persistent HTML changes needed."
             exit 0
           fi
 
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add index.html pages/
-          git commit -m "Keep Monetag verification and MultiTag on site pages"
+          git add index.html pages/ samsung-galaxy-s26-fe-review/ || true
+          git commit -m "Keep Monetag and S26 FE review links on site pages"
           git push origin main
