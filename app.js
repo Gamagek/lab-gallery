@@ -105,3 +105,17 @@ function escapeHTML(text) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
+// Shared latest-release module for the existing comparison page.
+// Keeping this loader here avoids rewriting the large hand-designed index.html,
+// and gives crawlers/users a stable internal link to the S26 FE review.
+(function loadS26FeDealRadar() {
+    const src = "/s26fe-deals-widget.js";
+    if (document.querySelector(`script[src="${src}"]`)) return;
+
+    const script = document.createElement("script");
+    script.src = src;
+    script.defer = true;
+    script.dataset.module = "s26fe-deal-radar";
+    document.body.appendChild(script);
+})();
