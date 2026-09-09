@@ -1,4 +1,4 @@
-name: Keep Monetag Verification Tag
+name: Keep Monetag Verification and MultiTag
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ on:
       - ".github/workflows/monetag.yml"
       - "index.html"
       - "pages/**"
+      - "sw.js"
   workflow_run:
     workflows:
       - "Update Media Data & Generate Pages"
@@ -28,39 +29,59 @@ jobs:
         with:
           ref: main
 
-      - name: Add Monetag verification tag
+      - name: Keep Monetag verification and MultiTag in HTML
         shell: bash
         run: |
-          set -euo pipefail
-          shopt -s nullglob
+          python - <<'PY'
+          from pathlib import Path
 
-          inject_tag() {
-            local file="$1"
-            if grep -q 'name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3"' "$file"; then
-              echo "Monetag tag already present: $file"
-              return
-            fi
+          verification = '<meta name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3">'
+          multitag = '<script src="https://quge5.com/88/tag.min.js" data-zone="278011" async data-cfasync="false"></script>'
 
-            sed -i '/<meta charset="UTF-8">/a\    <meta name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3">' "$file"
-            echo "Added Monetag tag: $file"
-          }
+          files = [Path('index.html')]
+          pages = Path('pages')
+          if pages.exists():
+              files.extend(sorted(pages.glob('*.html')))
 
-          inject_tag index.html
+          for path in files:
+              if not path.exists():
+                  continue
 
-          for file in pages/*.html; do
-            inject_tag "$file"
-          done
+              text = path.read_text(encoding='utf-8')
+              original = text
 
-      - name: Commit verification tag if needed
+              # Keep verification near the top of <head>.
+              if verification not in text:
+                  marker = '<meta charset="UTF-8">'
+                  if marker in text:
+                      text = text.replace(marker, marker + '\n    ' + verification, 1)
+                  else:
+                      text = text.replace('<head>', '<head>\n    ' + verification, 1)
+
+              # Keep the MultiTag directly after verification, high in <head>.
+              if 'https://quge5.com/88/tag.min.js' not in text:
+                  if verification in text:
+                      text = text.replace(verification, verification + '\n    ' + multitag, 1)
+                  else:
+                      text = text.replace('<head>', '<head>\n    ' + multitag, 1)
+
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  print(f'Updated {path}')
+              else:
+                  print(f'Already configured {path}')
+          PY
+
+      - name: Commit Monetag changes if needed
         shell: bash
         run: |
           if git diff --quiet; then
-            echo "No Monetag changes needed."
+            echo "No Monetag HTML changes needed."
             exit 0
           fi
 
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add index.html pages/
-          git commit -m "Keep Monetag verification tag on site pages"
+          git commit -m "Keep Monetag verification and MultiTag on site pages"
           git push origin main
