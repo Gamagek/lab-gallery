@@ -6,7 +6,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 */6 * * *" # Every 6 hours
+    - cron: "0 */6 * * *"
 
 permissions:
   contents: write
@@ -46,115 +46,10 @@ jobs:
               jq empty data.json
           fi
 
-      - name: Generate Static SEO Pages with Comparison Panel
+      - name: Generate SEO Pages and XML Sitemaps
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
-        run: |
-          node -e '
-            const fs = require("fs");
-            const items = JSON.parse(fs.readFileSync("data.json", "utf8"));
-            const gasUrl = process.env.GAS_URL;
-
-            if (!fs.existsSync("pages")) {
-              fs.mkdirSync("pages");
-            }
-
-            items.forEach(item => {
-              if (!item.id) return;
-              const html = `<!DOCTYPE html>
-              <html lang="en">
-              <head>
-                  <meta charset="UTF-8">
-                  <meta name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3">
-                  <script src="https://quge5.com/88/tag.min.js" data-zone="278011" async data-cfasync="false"><\/script>
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>${item.seoTitle || item.rawTitle || "AI Media Review"}</title>
-                  <meta name="description" content="${item.description || ""}">
-                  <meta name="keywords" content="${item.keywords || ""}">
-                  <meta property="og:title" content="${item.seoTitle || item.rawTitle || ""}">
-                  <meta property="og:description" content="${item.description || ""}">
-                  <meta property="og:type" content="article">
-                  <link rel="stylesheet" href="../style.css">
-              </head>
-              <body>
-                  <header>
-                      <h1>${item.seoTitle || item.rawTitle || ""}</h1>
-                      <p>Specification breakdown & multi-product analysis</p>
-                  </header>
-                  <main style="max-width:800px; margin:20px auto; padding:20px;">
-                      <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
-                          <figure style="margin:0 0 20px 0;">
-                              ${item.type === "video" ? `<video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="${item.url}"></video>` : `<img src="${item.url}" alt="${item.alt || item.rawTitle}" style="width:100%; aspect-ratio:16/9; object-fit:cover;">`}
-                          </figure>
-                          <p style="color:#555; margin-bottom:20px;">${item.description || ""}</p>
-                          
-                          <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
-                              <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
-                              <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using real-time web grounding.</p>
-                              <input type="text" id="compare-query-${item.id}" placeholder="e.g., Samsung S25 vs iPhone 16" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
-                              <button onclick="runComparison(\x27${item.id}\x27, \x27${gasUrl}\x27)" style="width:100%;">Compare & Analyze Upgrades</button>
-                              <div id="comparison-result-${item.id}" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
-                          </div>
-                      </article>
-                  </main>
-                  <!-- Include marked.js for visual markdown rendering -->
-                  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"><\/script>
-                  <script>
-                    async function runComparison(id, apiUrl) {
-                      const query = document.getElementById("compare-query-" + id).value;
-                      const resultDiv = document.getElementById("comparison-result-" + id);
-                      if (!query) {
-                        alert("Please enter products to compare!");
-                        return;
-                      }
-                      resultDiv.innerHTML = "⏳ Grounding and calculating VIP upgrade metrics...";
-                      try {
-                        const response = await fetch(apiUrl, {
-                          method: "POST",
-                          headers: { "Content-Type": "text/plain;charset=utf-8" },
-                          body: JSON.stringify({ action: "compare", query: query })
-                        });
-
-                        const rawText = await response.text();
-                        let data;
-                        try {
-                          data = JSON.parse(rawText);
-                        } catch (parseErr) {
-                          resultDiv.innerHTML = "❌ Server error: The backend returned an HTML page instead of JSON. Please check your Google Apps Script deployment URL.";
-                          return;
-                        }
-
-                        if (data.success) {
-                          let text = data.result;
-                          
-                          text = text.replace(/\\[[\\s\\S]*?\\]/g, "");
-
-                          text = text.replace(/\\+(\\d+)%/g, (match, p1) => {
-                            const val = Math.min(parseInt(p1), 100);
-                            return \`<div style="margin: 12px 0; padding: 12px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                                      <span style="font-weight: bold; color: #16a34a;">+\${val}% Performance Boost</span>
-                                      <div style="background: #e2e8f0; border-radius: 6px; height: 10px; width: 100%; margin-top: 6px; overflow: hidden;">
-                                        <div style="background: #22c55e; height: 100%; width: \${val}%;"></div>
-                                      </div>
-                                    </div>\`;
-                          });
-
-                          resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + marked.parse(text);
-                        } else {
-                          resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
-                        }
-                      } catch (err) {
-                        resultDiv.innerHTML = "Connection error: " + err.toString();
-                      }
-                    }
-                  <\/script>
-                  <script type="application/ld+json">${JSON.stringify(item.schema || {})}<\/script>
-                  <script src="../s26fe-deals-widget.js" defer><\/script>
-              </body>
-              </html>`;
-              fs.writeFileSync(`pages/${item.id}.html`, html);
-            });
-          '
+        run: node scripts/generate-pages.js
 
       - name: Commit and Push Changes
         run: |
@@ -163,7 +58,6 @@ jobs:
           git stash || true
           git pull origin main --rebase || true
           git stash pop || true
-          git add data.json pages/
-          git diff --cached --quiet || \
-          git commit -m "Auto update media data and static comparison pages"
+          git add data.json pages/ sitemap.xml review-sitemap.xml media-sitemap.xml sitemap-index.xml robots.txt
+          git diff --cached --quiet || git commit -m "Auto update review pages and SEO sitemaps"
           git push origin main
