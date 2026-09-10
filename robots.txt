@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://reviews.lowestitem.com/sitemap.xml
+Sitemap: https://reviews.lowestitem.com/review-sitemap.xml
