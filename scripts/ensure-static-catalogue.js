@@ -22,6 +22,18 @@ const staticItems = [
     alt: 'iPhone Duo specifications and cheaper alternatives infographic',
     thumbnail: '/assets/iphone-duo-specs-alternatives.svg',
     cloudflareTitle: 'Apple iPhone Duo Review 2026'
+  },
+  {
+    id: 'iphone-17-pro-discontinued',
+    type: 'image',
+    url: '/assets/iphone-17-pro-discontinued-news.svg',
+    rawTitle: 'iPhone 17 Pro and iPhone 17 Pro Max Discontinued',
+    seoTitle: 'iPhone 17 Pro & 17 Pro Max Discontinued After iPhone 18 Pro Launch: What Buyers Should Know',
+    description: 'Apple lineup update covering the removal of iPhone 17 Pro and iPhone 17 Pro Max from the current Apple online lineup after the iPhone 18 Pro announcement, with official iPhone 18 Pro launch facts, upgrade guidance, smart analysis, comments and reactions.',
+    keywords: 'iPhone 17 Pro discontinued, iPhone 17 Pro Max discontinued, iPhone 18 Pro launch, Apple September 2026, iPhone 18 Pro price, iPhone upgrade guide, Apple lineup update, iPhone news',
+    alt: 'iPhone 17 Pro and iPhone 17 Pro Max discontinued after iPhone 18 Pro launch',
+    thumbnail: '/assets/iphone-17-pro-discontinued-news.svg',
+    cloudflareTitle: 'iPhone 17 Pro Discontinued After iPhone 18 Pro Launch'
   }
 ];
 
