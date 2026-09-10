@@ -1,91 +1,24 @@
-<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3">
-        <script src="https://quge5.com/88/tag.min.js" data-zone="278011" async data-cfasync="false"></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Lab Review 1</title>
-        <meta name="description" content="">
-        <meta name="keywords" content="">
-        <meta property="og:title" content="Lab Review 1">
-        <meta property="og:description" content="">
-        <meta property="og:type" content="article">
-        <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-        <header>
-            <h1>Lab Review 1</h1>
-            <p>Specification breakdown & multi-product analysis</p>
-        </header>
-        <main style="max-width:800px; margin:20px auto; padding:20px;">
-            <article style="background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.08); padding:20px;">
-                <figure style="margin:0 0 20px 0;">
-                    <video controls style="width:100%; aspect-ratio:16/9; object-fit:cover;"><source src="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4"></video>
-                </figure>
-                <p style="color:#555; margin-bottom:20px;"></p>
-                
-                <div class="admin-panel" style="background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;">
-                    <h3 style="margin-bottom:10px; font-size:18px;">⚡ VIP Upgrade Intelligence Hub</h3>
-                    <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Compare specs, true upgrade paths, real costs, and performance percentages using real-time web grounding.</p>
-                    <input type="text" id="compare-query-1" placeholder="e.g., Samsung S25 vs iPhone 16" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:6px; margin-bottom:10px; font-size:14px; background:#fff;">
-                    <button onclick="runComparison('1', 'https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec')" style="width:100%;">Compare & Analyze Upgrades</button>
-                    <div id="comparison-result-1" style="margin-top:15px; font-size:14px; color:#334155; line-height: 1.6;"></div>
-                </div>
-            </article>
-        </main>
-        <!-- Include marked.js for visual markdown rendering -->
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script>
-          async function runComparison(id, apiUrl) {
-            const query = document.getElementById("compare-query-" + id).value;
-            const resultDiv = document.getElementById("comparison-result-" + id);
-            if (!query) {
-              alert("Please enter products to compare!");
-              return;
-            }
-            resultDiv.innerHTML = "⏳ Grounding and calculating VIP upgrade metrics...";
-            try {
-              const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ action: "compare", query: query })
-              });
-
-              const rawText = await response.text();
-              let data;
-              try {
-                data = JSON.parse(rawText);
-              } catch (parseErr) {
-                resultDiv.innerHTML = "❌ Server error: The backend returned an HTML page instead of JSON. Please check your Google Apps Script deployment URL.";
-                return;
-              }
-
-              if (data.success) {
-                let text = data.result;
-                
-                text = text.replace(/\[[\s\S]*?\]/g, "");
-
-                text = text.replace(/\+(\d+)%/g, (match, p1) => {
-                  const val = Math.min(parseInt(p1), 100);
-                  return `<div style="margin: 12px 0; padding: 12px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                            <span style="font-weight: bold; color: #16a34a;">+${val}% Performance Boost</span>
-                            <div style="background: #e2e8f0; border-radius: 6px; height: 10px; width: 100%; margin-top: 6px; overflow: hidden;">
-                              <div style="background: #22c55e; height: 100%; width: ${val}%;"></div>
-                            </div>
-                          </div>`;
-                });
-
-                resultDiv.innerHTML = "<strong>Analysis Results:</strong><br><br>" + marked.parse(text);
-              } else {
-                resultDiv.innerHTML = "Error: " + (data.error || "Failed to fetch comparison.");
-              }
-            } catch (err) {
-              resultDiv.innerHTML = "Connection error: " + err.toString();
-            }
-          }
-        </script>
-        <script type="application/ld+json">{}</script>
-        <script src="../s26fe-deals-widget.js" defer></script>
-    </body>
-    </html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="monetag" content="2cc0acc1fd02d70d710e75d874c636d3">
+<script src="https://quge5.com/88/tag.min.js" data-zone="278011" async data-cfasync="false"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lab Review 1</title>
+<meta name="description" content="Product media review 1 with specification breakdown and smart upgrade comparison tools.">
+<meta name="keywords" content="">
+<meta name="robots" content="index,follow,max-image-preview:large,max-video-preview:-1,max-snippet:-1">
+<link rel="canonical" href="https://reviews.lowestitem.com/pages/1.html">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Lowest Item Review Lab"><meta property="og:title" content="Lab Review 1"><meta property="og:description" content="Product media review 1 with specification breakdown and smart upgrade comparison tools."><meta property="og:url" content="https://reviews.lowestitem.com/pages/1.html"><meta property="og:image" content="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Samsung%20S%2026%20vs%20Iphone%2016%20specifications%2C%20reviews.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Lab Review 1"><meta name="twitter:description" content="Product media review 1 with specification breakdown and smart upgrade comparison tools."><meta name="twitter:image" content="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Samsung%20S%2026%20vs%20Iphone%2016%20specifications%2C%20reviews.png">
+<link rel="stylesheet" href="../style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://reviews.lowestitem.com/pages/1.html#webpage","url":"https://reviews.lowestitem.com/pages/1.html","name":"Lab Review 1","dateModified":"2026-09-10"},{"@type":"TechArticle","headline":"Lab Review 1","description":"Product media review 1 with specification breakdown and smart upgrade comparison tools.","mainEntityOfPage":{"@id":"https://reviews.lowestitem.com/pages/1.html#webpage"},"dateModified":"2026-09-10","author":{"@type":"Organization","name":"Lowest Item Review Lab"},"publisher":{"@type":"Organization","name":"Lowest Item Review Lab","url":"https://reviews.lowestitem.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Review catalogue","item":"https://reviews.lowestitem.com/"},{"@type":"ListItem","position":2,"name":"Lab Review 1","item":"https://reviews.lowestitem.com/pages/1.html"}]},{"@type":"VideoObject","name":"Lab Review 1","description":"Product media review 1 with specification breakdown and smart upgrade comparison tools.","thumbnailUrl":"https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Samsung%20S%2026%20vs%20Iphone%2016%20specifications%2C%20reviews.png","contentUrl":"https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4","uploadDate":"2026-09-10"}]}</script>
+<style>body{background:#061022;color:#f7faff}.seo-page{width:min(900px,calc(100% - 26px));margin:30px auto}.seo-card{background:#0d1f40;border:1px solid #8bbcff2b;border-radius:20px;padding:20px;margin-bottom:16px}.seo-page a{color:#8bd4ff}.seo-page input{width:100%;padding:12px;border-radius:11px;border:1px solid #8bbcff2b;background:#07172f;color:#fff}.seo-page button{padding:11px 14px;border:0;border-radius:11px;background:linear-gradient(135deg,#4da9ff,#a674ff);color:#fff;font-weight:800;cursor:pointer}.seo-result{margin-top:12px}</style>
+</head>
+<body>
+<main class="seo-page"><p><a href="/">← Browse all product reviews</a></p><article class="seo-card"><h1>Lab Review 1</h1><p>Product media review 1 with specification breakdown and smart upgrade comparison tools.</p><video controls playsinline preload="metadata" poster="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Samsung%20S%2026%20vs%20Iphone%2016%20specifications%2C%20reviews.png" style="width:100%;aspect-ratio:16/9;object-fit:contain;background:#020812;border-radius:16px"><source src="https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4" type="video/mp4"></video></article><section class="seo-card"><h2>⚡ Smart Upgrade Intelligence</h2><p>Compare products, specifications, upgrade paths and practical value.</p><input id="compare-query-1" placeholder="e.g. this product vs another model"><p><button onclick="runComparison('1')">Compare & Analyze Upgrades</button></p><div id="comparison-result-1" class="seo-result"></div></section><section class="seo-card"><h2>Explore more</h2><p><a href="/samsung-galaxy-s26-fe-review/">Samsung Galaxy S26 FE review →</a></p><p><a href="/samsung-galaxy-s26-vs-iphone-16/">Galaxy S26 vs iPhone 16 comparison →</a></p></section></main>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>async function runComparison(id){const q=document.getElementById('compare-query-'+id).value.trim(),o=document.getElementById('comparison-result-'+id);if(!q)return;o.textContent='⏳ Analyzing…';try{const r=await fetch("https://script.google.com/macros/s/AKfycbyMa1xbj8MAeSXIoCK_tJ9_1GKbJl09UrpltoR5N-zIUVxeQItbPVH9PuWfzcGpRqromw/exec",{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'compare',query:q})});const d=JSON.parse(await r.text());o.innerHTML=d.success?marked.parse(String(d.result||'')):'Error: '+String(d.error||'Analysis failed')}catch(e){o.textContent='Analysis error: '+e.message}}</script>
+<script src="../s26fe-deals-widget.js" defer></script>
+</body></html>
