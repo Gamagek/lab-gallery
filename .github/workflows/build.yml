@@ -46,10 +46,13 @@ jobs:
               jq empty data.json
           fi
 
-      - name: Generate SEO Pages and XML Sitemaps
+      - name: Generate SEO Pages and Core XML Sitemaps
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
         run: node scripts/generate-pages.js
+
+      - name: Generate Dedicated Image and Video SEO Sitemaps
+        run: node scripts/generate-media-sitemaps.js
 
       - name: Commit and Push Changes
         run: |
@@ -58,6 +61,6 @@ jobs:
           git stash || true
           git pull origin main --rebase || true
           git stash pop || true
-          git add data.json pages/ sitemap.xml review-sitemap.xml media-sitemap.xml sitemap-index.xml robots.txt
+          git add data.json pages/ samsung-galaxy-s26-fe-review/ sitemap.xml review-sitemap.xml media-sitemap.xml image-sitemap.xml video-sitemap.xml sitemap-index.xml robots.txt
           git diff --cached --quiet || git commit -m "Auto update review pages and SEO sitemaps"
           git push origin main
