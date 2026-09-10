@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://reviews.lowestitem.com/samsung-galaxy-s26-fe-review/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://images.samsung.com/is/image/samsung/assets/us/smartphones/galaxy-s26-fe/pdp-actual-size/S26_FE_See_Actual_Size_inch_PC_1440x547.jpg</video:thumbnail_loc>
+      <video:title>Samsung Galaxy S26 FE Smart Upgrade and Deal Review</video:title>
+      <video:description>Original Lowest Item Review Lab vertical promo introducing Samsung Galaxy S26 FE upgrade tips, review intelligence and current deal guidance.</video:description>
+      <video:content_loc>https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Samsung%20S%2026%20FE%20review.mp4</video:content_loc>
+      <video:duration>10</video:duration>
+      <video:publication_date>2026-09-10</video:publication_date>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://reviews.lowestitem.com/samsung-galaxy-s26-vs-iphone-16/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Samsung%20S%2026%20vs%20Iphone%2016%20specifications%2C%20reviews.png</video:thumbnail_loc>
+      <video:title>Samsung Galaxy S26 vs iPhone 16 Review and Upgrade Analysis</video:title>
+      <video:description>Smartphone comparison video with specification review and smart upgrade guidance.</video:description>
+      <video:content_loc>https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4</video:content_loc>
+      <video:publication_date>2026-09-06</video:publication_date>
+    </video:video>
+  </url>
+  <url>
+    <loc>https://reviews.lowestitem.com/pages/1.html</loc>
+    <video:video>
+      <video:thumbnail_loc>https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Samsung%20S%2026%20vs%20Iphone%2016%20specifications%2C%20reviews.png</video:thumbnail_loc>
+      <video:title>Lab Review 1</video:title>
+      <video:description>Product review media with smart upgrade analysis.</video:description>
+      <video:content_loc>https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Lab%20review%201.mp4</video:content_loc>
+      <video:publication_date>2026-09-10</video:publication_date>
+    </video:video>
+  </url>
+</urlset>
