@@ -46,6 +46,9 @@ jobs:
               jq empty data.json
           fi
 
+      - name: Keep Curated Catalogue Pages
+        run: node scripts/ensure-static-catalogue.js
+
       - name: Generate SEO Pages and Core XML Sitemaps
         env:
           GAS_URL: ${{ secrets.GAS_URL }}
@@ -53,6 +56,9 @@ jobs:
 
       - name: Generate Dedicated Image and Video SEO Sitemaps
         run: node scripts/generate-media-sitemaps.js
+
+      - name: Apply Rich Custom Review Pages
+        run: node scripts/apply-custom-pages.js
 
       - name: Commit and Push Changes
         run: |
