@@ -3,7 +3,6 @@ const fs = require('fs');
 const ORIGIN = 'https://reviews.lowestitem.com';
 const TODAY = new Date().toISOString().slice(0, 10);
 
-// Existing public R2 hostname already used by this review site.
 const R2 = 'https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev';
 const COMPARE_IMAGE = `${R2}/Samsung%20S%2026%20vs%20Iphone%2016%20specifications%2C%20reviews.png`;
 const COMPARE_VIDEO = `${R2}/Lab%20review%201.mp4`;
@@ -16,6 +15,13 @@ const esc = value => String(value ?? '')
   .replaceAll('>', '&gt;')
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&apos;');
+
+const absoluteUrl = value => {
+  const v = String(value || '').trim();
+  if (!v) return '';
+  if (/^https?:\/\//i.test(v)) return v;
+  return `${ORIGIN}${v.startsWith('/') ? v : `/${v}`}`;
+};
 
 let items = [];
 try {
@@ -46,14 +52,8 @@ const videoEntries = [
 ];
 
 const imageEntries = [
-  {
-    page: `${ORIGIN}/samsung-galaxy-s26-fe-review/`,
-    image: S26FE_IMAGE
-  },
-  {
-    page: `${ORIGIN}/samsung-galaxy-s26-vs-iphone-16/`,
-    image: COMPARE_IMAGE
-  }
+  { page: `${ORIGIN}/samsung-galaxy-s26-fe-review/`, image: S26FE_IMAGE },
+  { page: `${ORIGIN}/samsung-galaxy-s26-vs-iphone-16/`, image: COMPARE_IMAGE }
 ];
 
 for (const item of items) {
@@ -61,21 +61,15 @@ for (const item of items) {
   const page = `${ORIGIN}/pages/${encodeURIComponent(String(item.id))}.html`;
   const title = item.seoTitle || item.rawTitle || `Product Review ${item.id}`;
   const description = item.description || 'Product review media with smart upgrade analysis.';
-  const poster = item.thumbnail || item.poster || item.image || (String(item.id) === '1' ? COMPARE_IMAGE : '');
+  const poster = absoluteUrl(item.thumbnail || item.poster || item.image || (String(item.id) === '1' ? COMPARE_IMAGE : ''));
+  const content = absoluteUrl(item.url);
 
   if (item.type === 'video' && poster) {
-    videoEntries.push({
-      page,
-      thumbnail: poster,
-      title,
-      description,
-      content: item.url,
-      publicationDate: TODAY
-    });
+    videoEntries.push({ page, thumbnail: poster, title, description, content, publicationDate: TODAY });
   }
 
   if (item.type === 'image') {
-    imageEntries.push({ page, image: item.url });
+    imageEntries.push({ page, image: content });
   }
 }
 
@@ -89,7 +83,6 @@ fs.writeFileSync('video-sitemap.xml', videoSitemap);
 const imageSitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${imageEntries.map(imageXmlEntry).join('\n')}\n</urlset>\n`;
 fs.writeFileSync('image-sitemap.xml', imageSitemap);
 
-// Keep one combined media sitemap too, useful for engines and manual inspection.
 const mediaPages = new Map();
 for (const i of imageEntries) {
   const x = mediaPages.get(i.page) || { images: [], videos: [] };
@@ -115,7 +108,6 @@ const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmln
 fs.writeFileSync('sitemap-index.xml', sitemapIndex);
 fs.writeFileSync('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${ORIGIN}/sitemap-index.xml\n`);
 
-// Ensure the S26 FE page has static VideoObject metadata for the original promo.
 const s26Path = 'samsung-galaxy-s26-fe-review/index.html';
 if (fs.existsSync(s26Path)) {
   let html = fs.readFileSync(s26Path, 'utf8');
@@ -147,4 +139,4 @@ if (fs.existsSync(s26Path)) {
   fs.writeFileSync(s26Path, html);
 }
 
-console.log(`Generated ${videoEntries.length} video entries and ${imageEntries.length} image entries, plus static S26 FE VideoObject metadata.`);
+console.log(`Generated ${videoEntries.length} video entries and ${imageEntries.length} image entries with absolute media URLs.`);
