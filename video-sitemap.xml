@@ -31,4 +31,14 @@
       <video:publication_date>2026-09-10</video:publication_date>
     </video:video>
   </url>
+  <url>
+    <loc>https://reviews.lowestitem.com/pages/apple-duo.html</loc>
+    <video:video>
+      <video:thumbnail_loc>https://reviews.lowestitem.com/assets/iphone-duo-specs-alternatives.svg</video:thumbnail_loc>
+      <video:title>Apple iPhone Duo Smart Review, Upgrade Tips and Cheaper Alternatives</video:title>
+      <video:description>Original Lowest Item Review Lab iPhone Duo video supporting verified specifications, buying guidance, smart upgrade analysis and lower-price alternatives.</video:description>
+      <video:content_loc>https://pub-16ad521c710741b8abf9838e9bddac76.r2.dev/Apple%20Duo.mp4</video:content_loc>
+      <video:publication_date>2026-09-10</video:publication_date>
+    </video:video>
+  </url>
 </urlset>
