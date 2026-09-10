@@ -12,7 +12,18 @@ const NEWS_IMAGE = `${ORIGIN}/assets/iphone-17-pro-discontinued-news.svg`;
 fs.mkdirSync('pages', { recursive: true });
 fs.copyFileSync(path.join('templates', 'apple-duo.html'), path.join('pages', 'apple-duo.html'));
 fs.copyFileSync(path.join('templates', 'iphone-17-pro-discontinued.html'), path.join('pages', 'iphone-17-pro-discontinued.html'));
-console.log('Applied custom Apple iPhone Duo and iPhone 17 Pro discontinuation pages.');
+
+// The discontinuation page is a NewsArticle, not a product-sales page.
+// Mark mentioned phones as general article topics so Google does not expect
+// offers/review/aggregateRating on each mentioned phone.
+const newsPath = path.join('pages', 'iphone-17-pro-discontinued.html');
+let newsHtml = fs.readFileSync(newsPath, 'utf8');
+newsHtml = newsHtml.replaceAll('"@type":"Product","name":"iPhone 17 Pro"', '"@type":"Thing","name":"iPhone 17 Pro"');
+newsHtml = newsHtml.replaceAll('"@type":"Product","name":"iPhone 17 Pro Max"', '"@type":"Thing","name":"iPhone 17 Pro Max"');
+newsHtml = newsHtml.replaceAll('"@type":"Product","name":"iPhone 18 Pro"', '"@type":"Thing","name":"iPhone 18 Pro"');
+fs.writeFileSync(newsPath, newsHtml);
+
+console.log('Applied custom Apple pages and removed unintended Product rich-result requirements from the news article.');
 
 function insertBeforeClosing(file, marker, fragment, closingTag) {
   if (!fs.existsSync(file)) return;
