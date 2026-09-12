@@ -60,6 +60,20 @@ jobs:
       - name: Apply Rich Custom Review Pages and Sanitize Schema
         run: node scripts/apply-custom-pages.js
 
+      - name: Generate Crawl-First HTML Directory
+        run: node scripts/generate-crawl-directory.js
+
+      - name: Verify Crawl Essentials
+        run: |
+          set -e
+          test -s index.html
+          test -s all-reviews.html
+          test -s sitemap.xml
+          test -s sitemap-index.xml
+          grep -q 'https://reviews.lowestitem.com/all-reviews.html' sitemap.xml
+          grep -q 'Sitemap: https://reviews.lowestitem.com/sitemap-index.xml' robots.txt
+          echo "Crawl essentials verified"
+
       - name: Commit and Push Changes
         run: |
           git config user.name "github-actions"
@@ -67,6 +81,6 @@ jobs:
           git stash || true
           git pull origin main --rebase || true
           git stash pop || true
-          git add data.json index.html pages/ samsung-galaxy-s26-fe-review/ samsung-galaxy-s26-vs-iphone-16/ sitemap.xml review-sitemap.xml media-sitemap.xml image-sitemap.xml video-sitemap.xml sitemap-index.xml robots.txt
-          git diff --cached --quiet || git commit -m "Auto update review pages and SEO sitemaps"
+          git add data.json index.html all-reviews.html pages/ samsung-galaxy-s26-fe-review/ samsung-galaxy-s26-vs-iphone-16/ sitemap.xml review-sitemap.xml media-sitemap.xml image-sitemap.xml video-sitemap.xml sitemap-index.xml robots.txt
+          git diff --cached --quiet || git commit -m "Auto update review pages and SEO discovery files"
           git push origin main
