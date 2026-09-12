@@ -24,4 +24,10 @@
       <image:loc>https://reviews.lowestitem.com/assets/iphone-17-pro-discontinued-news.svg</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://reviews.lowestitem.com/pages/s26-ultra-vs-iphone17.html</loc>
+    <image:image>
+      <image:loc>https://reviews.lowestitem.com/assets/s26-ultra-vs-iphone17.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>
