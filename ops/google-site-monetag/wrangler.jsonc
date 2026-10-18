@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "google-site-monetag",
+  "main": "worker.mjs",
+  "account_id": "de9e41200f6bdfab80553c8eb08f9b16",
+  // Preserve the existing runtime date during this advertising-only change.
+  "compatibility_date": "2026-09-08",
+  "workers_dev": true,
+  "routes": [{"pattern":"www.lowestitem.com/*","zone_name":"lowestitem.com"}],
+  "observability": {"enabled":true}
+}

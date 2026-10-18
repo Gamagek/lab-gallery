@@ -22,6 +22,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install Comparison Image Renderer
+        run: npm ci --no-audit --no-fund
+
       - name: Install jq
         run: |
           sudo apt-get update
@@ -61,7 +70,14 @@ jobs:
         run: node scripts/apply-custom-pages.js
 
       - name: Generate Crawl-First HTML Directory
-        run: node scripts/generate-crawl-directory.js
+        run: |
+          node scripts/generate-comparisons.js
+          node scripts/render-comparison-images.js
+          node scripts/generate-crawl-directory.js
+          node scripts/apply-adsterra.js
+
+      - name: Verify Comparison Pages and Advertising
+        run: npm test
 
       - name: Verify Crawl Essentials
         run: |
@@ -81,6 +97,6 @@ jobs:
           git stash || true
           git pull origin main --rebase || true
           git stash pop || true
-          git add data.json index.html all-reviews.html pages/ samsung-galaxy-s26-fe-review/ samsung-galaxy-s26-vs-iphone-16/ sitemap.xml review-sitemap.xml media-sitemap.xml image-sitemap.xml video-sitemap.xml sitemap-index.xml robots.txt
+          git add data.json index.html all-reviews.html pages/ compare/ assets/comparisons/ samsung-galaxy-s26-fe-review/ samsung-galaxy-s26-vs-iphone-16/ sitemap.xml comparison-sitemap.xml review-sitemap.xml media-sitemap.xml image-sitemap.xml video-sitemap.xml sitemap-index.xml robots.txt
           git diff --cached --quiet || git commit -m "Auto update review pages and SEO discovery files"
           git push origin main

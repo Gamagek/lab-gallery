@@ -35,6 +35,11 @@ const pages = [
   }
 ];
 
+// Keep the curated comparison collection discoverable after feed rebuilds.
+const { products: comparisons } = require('../content/comparisons.cjs');
+pages.push({title:'50 Product Price Comparisons',url:'/compare/',type:'Product comparison directory',description:'Dated US price snapshots, practical alternatives and delivered-cost tools.'});
+for (const product of comparisons) pages.push({title:product.name + ': Price & Alternatives',url:`/compare/${product.slug}/`,type:product.group + ' comparison',description:product.focus + '.'});
+
 for (const item of items) {
   if (!item || !item.id) continue;
   pages.push({
