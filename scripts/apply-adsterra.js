@@ -21,8 +21,8 @@ function apply(file) {
   if (!file.endsWith('.html')) return;
   let html = fs.readFileSync(file, 'utf8').replace(/\s*<!-- adsterra-placement:start -->[\s\S]*?<!-- adsterra-placement:end -->\s*/g, '');
   // One banner per document, outside shopping links and interactive controls.
-  html = html.replace(/(<main\b[^>]*>)/i, `$1\n${placement}\n`);
-  if (!html.includes('data-adsterra-placement')) html = html.replace(/(<body\b[^>]*>)/i, `$1\n${placement}\n`);
+  html = html.replace(/(<main\b[^>]*>)\s*/i, `$1\n${placement}\n`);
+  if (!html.includes('data-adsterra-placement')) html = html.replace(/(<body\b[^>]*>)\s*/i, `$1\n${placement}\n`);
   fs.writeFileSync(file, html);
   count++;
 }
