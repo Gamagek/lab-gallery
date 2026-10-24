@@ -1,5 +1,7 @@
 # Lowest Item Review Lab
 
+The free browser-only tool at **https://www.lowestitem.com/compress/** supports batch image compression, lossless PNG recompression, local video encoding and lossless ZIP archives. Source is in `src/compressor/`; run `npm run compressor:build` after changes and commit the generated `compress/` assets and `_headers`. Images/video may use lossy encoding; ZIP preserves originals exactly. Very large or already compressed files cannot be promised large reductions. No user media upload, login or server encoder is used. See `ops/google-site-monetag/README.md` for the existing route Worker integration.
+
 Cloudflare Pages serves `reviews.lowestitem.com` from this repository’s `main` branch. Existing media reviews remain in their current paths. The researched comparison collection is under `/compare/` with 50 separate product pages and a server-rendered directory.
 
 Run `npm ci`, then `npm run comparisons` to regenerate the comparison pages, 1200 × 630 PNG graphics, crawl directory and labelled Adsterra placements. Run `npm test` before publishing. Source observations and distinct editorial text are in `content/comparisons.cjs`; manufacturer URLs are in `content/product-sources.json`. Prices are US starting-price snapshots checked on 2026-10-18, not a live retailer feed. Update the evidence and check date when refreshing prices. A normal rebuild does not pretend that prices were checked again.

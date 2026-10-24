@@ -2,9 +2,11 @@
   "name": "lowestitem-review-lab",
   "private": true,
   "scripts": {
+    "compressor:build": "node scripts/build-compressor.mjs",
     "comparisons": "node scripts/generate-comparisons.js && node scripts/render-comparison-images.js && node scripts/generate-crawl-directory.js && node scripts/apply-adsterra.js",
     "test": "node --test tests/*.test.cjs"
   },
   "engines": {"node": ">=22"},
-  "dependencies": {"sharp": "0.35.5"}
+  "dependencies": {"sharp": "0.35.5", "@ffmpeg/ffmpeg": "0.12.15", "fflate": "0.8.3"},
+  "devDependencies": {"esbuild": "0.28.2"}
 }

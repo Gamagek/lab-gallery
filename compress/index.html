@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Image & Video Compressor — No Upload | Lowest Item</title>
+  <meta name="description" content="Compress images and videos in your browser, or make a lossless ZIP of any files. Free, no login, no server upload. Preview results and download locally.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#f6f7f2">
+  <link rel="canonical" href="https://www.lowestitem.com/compress/">
+  <link rel="sitemap" type="application/xml" href="https://www.lowestitem.com/compress/sitemap.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Smaller files. Your files. | Lowest Item Compress">
+  <meta property="og:description" content="A free image, video and ZIP compressor that works on your device. No login. No media uploads.">
+  <meta property="og:url" content="https://www.lowestitem.com/compress/">
+  <meta property="og:image" content="https://reviews.lowestitem.com/compress/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="stylesheet" href="./assets/app-16b67b6519eb.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","@id":"https://www.lowestitem.com/compress/#app","name":"Lowest Item Compress","url":"https://www.lowestitem.com/compress/","applicationCategory":"MultimediaApplication","operatingSystem":"Any device with a compatible modern browser","browserRequirements":"JavaScript, Web Workers and WebAssembly for video compression","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Local image compression","Local MP4 video compression","Lossless ZIP archives for any file type","Lossless PNG recompression","No account or server upload"]}</script>
+  <script type="module" src="./assets/app-f7037841a5b7.js"></script>
+</head>
+<body>
+<a class="skip" href="#compressor">Skip to compressor</a>
+<header class="header wrap">
+  <a class="brand" href="https://www.lowestitem.com/" aria-label="Lowest Item home"><span class="brand-symbol" aria-hidden="true">↘</span>lowest<span>item</span><span class="brand-divider">/</span><span class="brand-product">compress</span></a>
+  <nav aria-label="Main navigation"><a href="#how-it-works">How it works</a><a href="#questions">FAQs</a><a class="privacy-pill" href="#privacy"><span aria-hidden="true">◉</span> Made for privacy</a></nav>
+</header>
+<main>
+<section class="hero wrap">
+  <div class="eyebrow"><span class="live-dot" aria-hidden="true"></span> LESS WEIGHT. MORE ROOM.</div>
+  <h1>Smaller files.<br><span>Still entirely yours.</span></h1>
+  <p class="hero-copy">Compress images and videos without sending them anywhere.<br class="desktop"> Free tools. No account. Everything happens in your browser.</p>
+  <div class="trust"><span>✓ No server uploads</span><span>✓ No sign-up</span><span>✓ You control the quality</span></div>
+  <div class="hero-stamp" aria-hidden="true"><span>100%</span><small>ON YOUR DEVICE</small><svg viewBox="0 0 100 40" fill="none"><path d="M7 9Q34 32 84 15M71 8L86 15L77 28" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</section>
+<section class="workspace wrap" id="compressor" aria-label="File compressor">
+  <div class="workspace-top"><div class="tabs" role="tablist" aria-label="Compression tool">
+    <button id="tab-images" class="tab active" role="tab" aria-selected="true" aria-controls="tool-panel" data-mode="images"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></svg>Images</button>
+    <button id="tab-video" class="tab" role="tab" aria-selected="false" aria-controls="tool-panel" data-mode="video" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="14" height="14" rx="3"/><path d="m17 10 4-3v10l-4-3"/></svg>Video</button>
+    <button id="tab-zip" class="tab" role="tab" aria-selected="false" aria-controls="tool-panel" data-mode="zip" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a2 2 0 0 1 2-2Z"/><path d="M14 3v6h5M10 4v2m0 2v2m0 2v2m-1 2h3v3H9z"/></svg>Any file → ZIP</button>
+  </div><span class="local-indicator"><span aria-hidden="true">◉</span> Local processing</span></div>
+  <div id="tool-panel" class="tool-panel" role="tabpanel" aria-labelledby="tab-images">
+    <div class="tool-main">
+      <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/bmp" multiple hidden>
+      <div id="drop-zone" class="drop-zone">
+        <div class="file-illustration" aria-hidden="true"><div class="back-file"></div><div class="front-file"><svg viewBox="0 0 32 32"><path d="M5 23 12 15l5 5 5-8 6 11"/><circle cx="11" cy="10" r="2"/></svg></div><span class="shrink-badge">↘</span></div>
+        <h2 id="drop-title">A little lighter looks good.</h2>
+        <p id="drop-copy">Drop your images here, or choose them from your device.</p>
+        <button id="choose-files" class="button primary" type="button"><span aria-hidden="true">＋</span> Choose images</button>
+        <p id="format-help" class="format-help">JPG, PNG, WebP, AVIF, BMP · Up to 20 images</p>
+        <button id="try-demo" class="text-button" type="button">Just looking? Try a sample image <span aria-hidden="true">↗</span></button>
+      </div>
+      <div id="queue" class="queue" aria-live="polite"></div>
+      <div id="job-progress" class="job-progress" hidden><div class="progress-heading"><span id="progress-label">Getting ready…</span><button id="cancel" class="text-button" type="button">Cancel</button></div><progress id="progress" max="100" aria-label="Compression progress"></progress><p id="progress-detail">Your file stays on this device.</p></div>
+      <div id="notice" class="notice" role="status" hidden></div>
+    </div>
+    <aside class="settings" aria-label="Compression settings">
+      <div class="settings-heading"><h2>Make it yours</h2><span aria-hidden="true">⚙</span></div>
+      <div id="image-settings">
+        <label for="image-mode">Compression</label><select id="image-mode"><option value="balanced">Balanced · recommended</option><option value="high">High visual quality</option><option value="small">Smallest file</option><option value="lossless">Lossless PNG / keep originals</option></select>
+        <label for="image-format">Output format</label><select id="image-format"><option value="image/webp">WebP · smaller files</option><option value="image/jpeg">JPG · wide compatibility</option><option value="image/png">PNG · keep transparency</option></select>
+        <label for="image-size">Longest edge</label><select id="image-size"><option value="1920">Up to 1920 px</option><option value="2560">Up to 2560 px</option><option value="1280">Up to 1280 px</option><option value="0">Original dimensions</option></select>
+        <p id="image-quality-note" class="setting-note">Balanced mode uses visually careful, lossy compression. Resizing can reduce detail. JPG flattens transparency onto white.</p>
+      </div>
+      <div id="video-settings" hidden>
+        <label for="video-quality">Compression</label><select id="video-quality"><option value="balanced">Balanced · recommended</option><option value="high">High visual quality</option><option value="small">Smaller file</option></select>
+        <label for="video-size">Longest edge</label><select id="video-size"><option value="1280">Up to 1280 px</option><option value="1920">Up to 1920 px</option><option value="854">Up to 854 px</option><option value="0">Original dimensions</option></select>
+        <div class="format-tag">MP4 · H.264 video + AAC audio</div>
+        <p class="setting-note">Video encoding is lossy and can take several minutes. The first use downloads a ~32 MB video engine. Your video is never uploaded.</p>
+      </div>
+      <div id="zip-settings" hidden><div class="zip-benefit"><span aria-hidden="true">✓</span><h3>Every original byte.</h3><p>Put any file type into one lossless ZIP. Extract it to recover the exact originals.</p></div><p class="setting-note">Documents and text often shrink well. MP4, JPG, PDF and existing archives may barely shrink, or the ZIP may be larger.</p></div>
+      <button id="compress" class="button dark" type="button" disabled>Compress images <span aria-hidden="true">↘</span></button>
+      <p id="device-limit" class="device-limit">Files are processed one at a time to use less memory.</p>
+      <div class="privacy-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3v6c0 4-4 7-8 9-4-2-8-5-8-9V6z"/><path d="m8 12 3 3 5-6"/></svg><p>No uploads. No waiting room.<br>Only you have your files.</p></div>
+    </aside>
+  </div>
+  <div class="workspace-bottom"><span><span aria-hidden="true">⌁</span> Built for the browser. Designed for your peace of mind.</span><a href="#quality">A quick word about quality ↗</a></div>
+</section>
+<section id="results" class="results wrap" hidden aria-labelledby="results-title"><div class="section-heading"><div><p class="eyebrow">READY WHEN YOU ARE</p><h2 id="results-title">A little space, saved.</h2></div><button id="clear-files" class="text-button" type="button">Clear files & results</button></div><div id="result-summary" class="result-summary"></div><div id="result-list" class="result-list"></div></section>
+<section id="how-it-works" class="steps wrap"><div class="section-heading"><div><p class="eyebrow">THREE LITTLE STEPS</p><h2>Less file. Less fuss.</h2></div><p>No email, installation or subscription.</p></div><div class="step-grid"><article><span class="step-number">01</span><h3>Choose your files</h3><p>Select or drop files from your device. Selecting a file gives this page local access; it does not upload it.</p></article><article><span class="step-number">02</span><h3>Find your balance</h3><p>Choose quality and size for images or video. Pick ZIP when you need every original byte preserved.</p></article><article><span class="step-number">03</span><h3>Save some space</h3><p>See the actual before and after sizes, preview supported media, and download the result directly.</p></article></div></section>
+<section id="quality" class="quality wrap"><div><p class="eyebrow">A QUICK WORD ABOUT QUALITY</p><h2>Smaller doesn't have<br>to mean a mystery.</h2><p>There is no magic setting that makes every file dramatically smaller with zero quality loss. We show the trade-off before you start.</p></div><div class="quality-options"><article><span class="quality-dot green"></span><div><h3>Lossless: keep the exact content</h3><p>ZIP restores the exact original files. PNG lossless mode recompresses image data without changing pixels or metadata. Already compact files may stay the same size.</p></div></article><article><span class="quality-dot orange"></span><div><h3>Visual quality: choose a smaller result</h3><p>JPG, WebP and MP4 encoding trades some detail for fewer bytes. Start with High visual quality for important photos, or Balanced for everyday sharing. Always check the preview.</p></div></article></div></section>
+<section id="questions" class="faq wrap"><div class="section-heading"><div><p class="eyebrow">GOOD QUESTIONS</p><h2>A few things to know.</h2></div></div><div class="faq-grid"><details><summary>Are my photos or videos uploaded?</summary><p>No. This tool reads selected files in your browser and processes them on your device. The site downloads page assets and, only when needed, the video engine. It has no media upload endpoint.</p></details><details><summary>Can I compress any file type?</summary><p>Any file type can go into a ZIP within the displayed memory limit. Direct image conversion supports browser-decodable JPG, PNG, WebP, AVIF and BMP. Video compression attempts MP4, MOV, WebM and other FFmpeg-supported containers; unusual codecs or damaged files can fail. Use ZIP for GIF animation, SVG, unsupported images and exact originals.</p></details><details><summary>Can I compress without losing quality?</summary><p>Choose ZIP to preserve every byte, or lossless PNG to preserve the PNG's image data and metadata. Lossless image mode keeps other image formats unchanged. Video re-encoding and standard JPG or WebP conversion are lossy, even when the difference is hard to see.</p></details><details><summary>Why isn't my file much smaller?</summary><p>A file may already use efficient compression. Re-encoding can even make it bigger. For image and video compression, we keep your original when it is smaller. ZIP adds a little archive overhead and cannot guarantee a reduction.</p></details><details><summary>How large a video can I process?</summary><p>The tool shows a conservative file-size limit based on your device. It currently allows up to 100 MB on mobile or low-memory devices, and 200 MB on other devices. Even smaller files can exceed available memory. Keep the tab open; long or high-resolution videos can take several minutes. Use a desktop video app for very large projects.</p></details><details><summary>Is it free? Why is there an advertisement?</summary><p>The tools are free and do not need an account. Starting compression can show one clearly labelled sponsored-offer panel per browsing session. You can close it immediately. Opening the advertisement is optional and never required to finish or download.</p></details></div></section>
+<section id="privacy" class="privacy-section wrap"><div class="privacy-icon" aria-hidden="true">◉</div><div><h2>Your device is the workspace.</h2><p>Your selected files stay in this tab's memory. Clear files or close the tab to release them; downloads you save remain on your device. Ordinary page requests are handled by our hosting providers. If you choose a sponsored link, the advertiser opens in a separate tab and its own privacy terms apply.</p><p>Processing a video uses your device's CPU, RAM and battery. Keep a copy of important originals.</p></div></section>
+<noscript><p class="wrap notice">JavaScript is required for local compression. Enable it to use the tool; the explanation above is available without it.</p></noscript>
+</main>
+<footer class="footer wrap"><a class="brand" href="https://www.lowestitem.com/"><span class="brand-symbol" aria-hidden="true">↘</span>lowest<span>item</span></a><p>A little lighter. A little simpler.</p><nav aria-label="Footer"><a href="https://reviews.lowestitem.com/">Reviews & comparisons</a><a href="#privacy">Privacy</a><a href="./licenses.txt">Open-source notices</a></nav></footer>
+<dialog id="sponsor-dialog" aria-labelledby="sponsor-title"><button id="close-sponsor" class="dialog-close" aria-label="Close advertisement" type="button">×</button><span class="ad-label">ADVERTISEMENT · OPTIONAL</span><h2 id="sponsor-title">Your files are getting lighter.</h2><p>While your device does the work, you can explore a sponsored offer. Your compression continues here, and no file is shared with the advertiser.</p><a class="button primary" href="https://www.profitableratecpmnetwork.com/bekcz354f?key=cf45856b1cb3dd1c888ed52638e864d8" target="_blank" rel="sponsored nofollow noopener noreferrer">Explore sponsored offer ↗</a><button id="skip-sponsor" class="text-button" type="button">Continue with my files</button><small>Shown once per browsing session. No ad click required.</small></dialog>
+</body>
+</html>
