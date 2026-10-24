@@ -121,6 +121,13 @@ ${MONETAG}
 </html>\n`;
 
 fs.writeFileSync('all-reviews.html', directory);
+// Keep the independently hosted tool linked after scheduled media rebuilds.
+const toolLink = '<a data-compressor-link href="https://www.lowestitem.com/compress/">Free image, video & ZIP compressor</a>';
+for (const file of ['index.html', 'all-reviews.html']) {
+  if (!fs.existsSync(file)) continue;
+  const html = fs.readFileSync(file, 'utf8');
+  if (!html.includes('data-compressor-link')) fs.writeFileSync(file, html.replace('</footer>', ` · ${toolLink}</footer>`));
+}
 
 function addToSitemap(path) {
   if (!fs.existsSync(path)) return;
